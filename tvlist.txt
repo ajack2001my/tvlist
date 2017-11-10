@@ -10,34 +10,45 @@
 #
 #     N|Name,Path
 #
-#     N            = 0..7, 0=Sunday, 1=Monday, etc. 7=Season break/Unknown
+#     N            = 0..7, 0=Sunday, 1=Monday, etc. 7=Unknown, Y=Break, Z=Ended
 #     Name         = Name of Show
 #     Path         = EZTV Path to your specific show, if EZTV does not have a dedicated page use "0//"
 #
 #     
 
+z|Babylon 5,0//
+0|Blue Planet II,2506/blue-planet-ii/
+2|Cyberwar,2469/cyberwar/
+Z|Dark Matter,1275/dark-matter/
 2|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
+Y|Freakish,2075/freakish/
 4|Ghost Wars,2464/ghost-wars/
 0|Ghosted,2155/ghosted/
 3|Highway Thru Hell,0//
-7|I am Frankie,2239/i-am-frankie/
-7|Killjoys,1281/killjoys/
-1|Lucifer,1582/lucifer/
-7|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
+Y|I am Frankie,2239/i-am-frankie/
+Y|Killjoys,1281/killjoys/
+Y|Legion,2003/legion/
+0|Lucifer,1582/lucifer/
+Y|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
 5|Marvels Inhumans,2156/inhumans/
+2|Marvels Runaways,0//
 3|Mr Robot,1250/mr-robot/
-7|Sense8,2015/sense8/
-7|Shadowhunters,1563/shadowhunters-the-mortal-instruments/
+X|Nurses Who Kill,0//
+Y|Sense8,2015/sense8/
+Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/
+3|Stan Against Evil,0//
 0|Star Trek Discovery,2249/star-trek-discovery/
 0|Star Wars Rebels,1119/star-wars-rebels/
-1|The Big Bang Theory,23/the-big-bang-theory/
-7|The Expanse,1342/the-expanse/
+0|Superstition,0//
+4|The Big Bang Theory,23/the-big-bang-theory/
+Y|The Expanse,1342/the-expanse/
 1|The Gifted,2162/the-gifted/
 1|The Good Doctor,2160/the-good-doctor/
-7|The Librarians,1150/the-librarians/
-7|The Magicians,1527/the-magicians/
-7|The Night Shift,1041/the-night-shift/
+Y|The Librarians,1150/the-librarians/
+Y|The Magicians,1527/the-magicians/
+Z|The Night Shift,1041/the-night-shift/
 4|The Orville,2151/the-orville/
 3|The Shannara Chronicles,1585/the-shannara-chronicles/
 0|The Simpsons,249/the-simpsons/
-7|Young Sheldon,2250/young-sheldon/
+7|Will and Grace,0//
+4|Young Sheldon,2250/young-sheldon/
