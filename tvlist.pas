@@ -7,13 +7,19 @@ USES
 
 CONST
   ProgName = 'TV List';
-  ProgVer = 'v0.5';
-  ProgDate = '20171025';
+  ProgVer = 'v0.5c';
+  ProgDate = '20171110';
 
   LinkEZTV = 'https://eztv.ag';
   LinkEZTV_Search = 'https://eztv.ag/search/';
   LinkTPB = 'https://thepiratebay.org/search/';
   LinkTVcom = 'http://www.tv.com/search?q=';
+  Variety_Search = 'http://variety.com/results/#?q=';
+{  
+  LinkTVLine = 'http://tvline.com/results/#?q=';
+}
+ LinkTVLine = 'http://tvline.com/tag/'; 
+ LinkYesMovies_Search = 'https://yesmovies.to/search/';
 
 VAR
   S,
@@ -43,7 +49,8 @@ PROCEDURE Write_Headers2;
 BEGIN
   WriteLn (T, '<TABLE BORDER=1>');
   WriteLn (T, '<TR><TH ALIGN="LEFT">Show</TH><TH ALIGN="LEFT">EZTV Link</TH><TH ALIGN="LEFT">' +
-              'EZTV Search</TH><TH ALIGN="LEFT">The Pirate Bay</TH><TH>TV.com</TH><TH>Airs</TH></TR>');
+              'EZTV Search</TH><TH ALIGN="LEFT">The Pirate Bay</TH><TH>TV.com</TH><TH>VARIETY.com</TH>' + 
+			  '<TH>TVLine.com</TH><TH>Yesmovies.to</TH><TH>Airs</TH></TR>');
 END;
 
 PROCEDURE Write_Footer;
@@ -154,6 +161,16 @@ BEGIN
   DashSpace := X;
 END;
 
+FUNCTION PlusSpace (X: String): String;
+VAR
+  I : Word;
+BEGIN
+  FOR I := 1 TO Length(X) DO
+    IF X[I] = ' ' THEN
+      X[I] := '+';
+  PlusSpace := X;
+END;
+
 PROCEDURE ProcessFilesOpen;
 BEGIN
   Assign (S, 'tvlist.txt');
@@ -172,17 +189,19 @@ BEGIN
       REPEAT
         ReadLn (S, W);
       UNTIL (W[1] <> '#') OR Eof(S);
-  ShowDay := '.......';
+  ShowDay := '<B>&#91;UNKWN&#93;</B>';
   IF W[2] = '|' THEN
     BEGIN
-      CASE W[1] OF
-        '0' : ShowDay := '<B>S</B>......';
-        '1' : ShowDay := '.<B>M</B>.....';
-        '2' : ShowDay := '..<B>T</B>....';
-        '3' : ShowDay := '...<B>W</B>...';
-        '4' : ShowDay := '....<B>T</B>..';
-        '5' : ShowDay := '.....<B>F</B>.';
-        '6' : ShowDay := '......<B>S</B>';
+      CASE UpCase(W[1]) OF
+        '0' : ShowDay := '--<B>SUN</B>--';
+        '1' : ShowDay := '--<B>MON</B>--';
+        '2' : ShowDay := '--<B>TUE</B>--';
+        '3' : ShowDay := '--<B>WED</B>--';
+        '4' : ShowDay := '--<B>THU</B>--';
+        '5' : ShowDay := '--<B>FRI</B>--';
+        '6' : ShowDay := '--<B>SAT</B>--';
+        'Y' : ShowDay := '&#91;<B>BREAK</B>&#93;';
+        'Z' : ShowDay := '&#91;<B>ENDED</B>&#93;';
       END;
       Delete (W, 1, 2);
     END;
@@ -202,7 +221,13 @@ BEGIN
           Write (T, '<TD></TD>');
         Write (T, '<TD><A HREF="', LinkEZTV_Search, DashSpace(XN), '" TARGET="_BLANK">Search</A></TD>');
         Write (T, '<TD><A HREF="', LinkTPB, XN, '/" TARGET="_BLANK">TPB</A></TD>');
-        Write (T, '<TD><A HREF="', LinkTVcom, XN, '" TARGET="_BLANK">TV</A></TD>');
+        Write (T, '<TD><A HREF="', LinkTVcom, XN, '" TARGET="_BLANK">Info</A></TD>');
+        Write (T, '<TD><A HREF="', Variety_Search, XN, '" TARGET="_BLANK">News</A></TD>');
+{		
+        Write (T, '<TD><A HREF="', LinkTVLine, XN, '" TARGET="_BLANK">News</A></TD>');
+}
+        Write (T, '<TD><A HREF="', LinkTVLine, DashSpace(XN), '" TARGET="_BLANK">Search</A></TD>');
+        Write (T, '<TD><A HREF="', LinkYesMovies_Search, PlusSpace(XN), '.html" TARGET="_BLANK">View Online</A></TD>');
         Write (T, '<TD><TT>', ShowDay, '</TT></TD>');
         WriteLn (T, '</TR>');
         Write ('.');
