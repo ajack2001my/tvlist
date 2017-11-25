@@ -10,11 +10,14 @@ TVLIST.HTM file you can then open in your web browser.
 
 Update from previous version:
 
-Program has been expanded to not just quickly find your show torrents, but to get news about the series you are 
-following via the sites variety.com and tvline.com. TVList also now allows you to view the same shows online via 
-yesmovies.to site.
+Program has been expanded to not just quickly find your show torrents, but to get news about the series and 
+search some popular torrent search engines.
 
-Also made some cosmetic changes to the layout and updated the tvlist.txt file to show some of the changes to the app.
+Restructured the output as well as cleaned up the source code.  Looks more refined now compared to the 
+previous "quick and dirty" look of the code.  
+
+Removed the tvlist.png file as it is now embedded in the source code and will be auto-generated if not
+found during the HTML generation.
 
 -----------------------
 
