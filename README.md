@@ -10,15 +10,11 @@ TVLIST.HTM file you can then open in your web browser.
 
 Update from previous version:
 
-Program has been expanded to not just quickly find your show torrents, but to get news about the series and 
-search some popular torrent search engines.
+Code has been restructured, added a few more new websites to support your search/download efforts. Layout has 
+changed and should be easier to use.
 
-Restructured the output as well as cleaned up the source code.  Looks more refined now compared to the 
-previous "quick and dirty" look of the code.  
-
-Removed the tvlist.png file as it is now embedded in the source code and will be auto-generated if not
-found during the HTML generation.
 
 -----------------------
 
-Free Pascal 3.0.2 was used to compile this source code.  Has been tested in Win32 and Linux targets.
+Free Pascal 3.0.2 was used to compile this source code.  Has been tested in Windows and Linux environments and 
+on 32-bit and 64-bit targets.
