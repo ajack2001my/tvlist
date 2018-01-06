@@ -16,39 +16,69 @@
 #
 #     
 
-z|Babylon 5,0//
+7|A Series of Unfortunate Events,0//
+7|Altered Carbon,0//
+7|Arrow,679/arrow/
+Z|Babylon 5,0//
+7|Black Lightning,0//
 0|Blue Planet II,2506/blue-planet-ii/
+7|Burn Notice,39/burn-notice/
+3|Chance,2191/chance/
 2|Cyberwar,2469/cyberwar/
 Z|Dark Matter,1275/dark-matter/
 2|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
+7|Elementary,715/elementary/
+0|Extinct,0//
 Y|Freakish,2075/freakish/
+7|Future Man,0//
 4|Ghost Wars,2464/ghost-wars/
 0|Ghosted,2155/ghosted/
+0|Good Behavior,1964/good-behavior/
+7|HC Spy Web International Espionage,0//
 3|Highway Thru Hell,0//
 Y|I am Frankie,2239/i-am-frankie/
+7|Jean Claude Van Johnson,0//
 Y|Killjoys,1281/killjoys/
+3|Knightfall,0//
+7|Krypton,0//
 Y|Legion,2003/legion/
-0|Lucifer,1582/lucifer/
-Y|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
-5|Marvels Inhumans,2156/inhumans/
+1|Lucifer,1582/lucifer/
+5|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
+Z|Marvels Inhumans,2156/inhumans/
 2|Marvels Runaways,0//
+Y|Marvels The Punisher,2536/the-punisher/
+Y|Mindhunter,2489/mindhunter/
 3|Mr Robot,1250/mr-robot/
+7|Multiple Man,0//
+7|Nightflyers,0//
+7|No Activity,0//
 X|Nurses Who Kill,0//
 Y|Sense8,2015/sense8/
 Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/
+7|Shot in the Dark,0//
+7|Somethings Killing Me,0//
 3|Stan Against Evil,0//
-0|Star Trek Discovery,2249/star-trek-discovery/
+Y|Star Trek Discovery,2249/star-trek-discovery/
 0|Star Wars Rebels,1119/star-wars-rebels/
-0|Superstition,0//
+7|Stargate Origins,0//
+7|Supergirl,1222/supergirl/
+5|Superstition,0//
+Z|The 4400,2523/the-4400/
+7|The Alienist,0//
 4|The Big Bang Theory,23/the-big-bang-theory/
 Y|The Expanse,1342/the-expanse/
+7|The Flash,1058/the-flash-2014/
 1|The Gifted,2162/the-gifted/
 1|The Good Doctor,2160/the-good-doctor/
-Y|The Librarians,1150/the-librarians/
+7|The Indian Detective,0//
+3|The Librarians,1150/the-librarians/
 Y|The Magicians,1527/the-magicians/
 Z|The Night Shift,1041/the-night-shift/
 4|The Orville,2151/the-orville/
 3|The Shannara Chronicles,1585/the-shannara-chronicles/
 0|The Simpsons,249/the-simpsons/
+7|The Story of Us With Morgan Freeman,0//
+3|The X-Files,1579/the-x-files/
+Y|Transparent,1520/transparent/
 7|Will and Grace,0//
 4|Young Sheldon,2250/young-sheldon/
