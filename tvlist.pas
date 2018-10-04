@@ -13,8 +13,8 @@ USES
 
 CONST
   ProgName             = 'TVList';
-  ProgVer              = 'v0.8';
-  ProgDate             = '20180107';
+  ProgVer              = 'v0.9';
+  ProgDate             = '20181004';
   ProgAuthor           = 'Adrian Chiang';
   ProgDesc             = 'A Torrent TV Series Manager';
 
@@ -38,40 +38,10 @@ CONST
   Desc_Airs       = 'Day show airs, between seasons, mid-season break, ended or unknown.';
   Desc_General    = 'Search in Google for your TV dramas.';
 
-  URL_EZTV           = 'https://eztv.ag';
-  URL_TPB            = 'https://thepiratebay.org';
-  URL_TV             = 'http://www.tv.com';
-  URL_Variety        = 'http://variety.com';
-  URL_TVLine         = 'http://tvline.com';
-  URL_YesMovies      = 'https://yesmovies.to';
-  URL_TVSeriesFinale = 'https://tvseriesfinale.com';
-  URL_ExtraTorrent   = 'https://extratorrent.ag';
-  URL_LimeTorrent    = 'https://nntorrent.com';
-  URL_MKVTV          = 'http://mkvtv.net';
-  URL_Openload       = 'http://openloadmovies.tv';
-  URL_Torz2          = 'https://torrentz2.eu';
-  URL_Leetx          = 'http://1337x.to';
-  URL_Google         = 'https://www.google.com';
-  URL_ReturnDates    = 'https://www.returndates.com';
-  
+
   URL_TVList_Source  = 'https://www.github.com/ajack2001my/tvlist';
   
-  Link_EZTV             = URL_EZTV;
-  Link_EZTV_Search      = URL_EZTV + '/search/';
-  Link_TPB              = URL_TPB + '/search/';
-  Link_TVcom            = URL_TV + '/search?q=';
-  Link_Variety_Search   = URL_Variety + '/results/#?q=';
-  Link_TVLine           = URL_TVLine + '/tag/'; 
-  Link_YesMovies_Search = URL_YesMovies + '/search/';
-  Link_TVSF             = URL_TVSeriesFinale + '/tv-show/';
-  Link_ExtraTorrent     = URL_ExtraTorrent + '/search/?search=';
-  Link_LimeTorrent      = URL_LimeTorrent + '/search/all/';
-  Link_MKVTV            = URL_MKVTV + '/?s=';
-  Link_Openload         = URL_Openload + '/?s=';
-  Link_Torz2            = URL_Torz2 + '/verified?f=';
-  Link_Leetx            = URL_Leetx + '/search/';
-  Link_Google           = URL_Google + '/search?&q=';
-  
+ 
   TDStr = '<TD ALIGN="CENTER">';
 
   TVListString = 'tvlist';
@@ -84,6 +54,10 @@ CONST
   VLink_Color    = '"#000000"';
   Line1_BGColor  = '"#BBBBBB"';
   Line2_BGColor  = '"#DDDDDD"';
+  ComText_Color  = '"#FF00FF"';
+  
+  TVListLnkName = TVListString + '.urk';
+  TVListLnkSize = 15;
   
   TVListPNGSize = 279;
   TVListPNGName = TVListString + '.png';
@@ -127,6 +101,7 @@ CONST
   LineCount,
   V,
   I         : Word;
+  ComText,
   ShowDay,
   L1,
   L2,
@@ -145,6 +120,69 @@ CONST
   xStart, 
   xEnd      : QWord;
   xDiff     : Real;
+  LinkURL,
+  URL       : Array[1..15] of String;
+  
+PROCEDURE URLInit;
+VAR
+    I : Word;
+	T : Text;
+BEGIN
+  URL[ 1] := 'https://eztv.ag';
+  URL[ 2] := 'https://thepiratebay.org';
+  URL[ 3] := 'http://www.tv.com';
+  URL[ 4] := 'http://variety.com';
+  URL[ 5] := 'http://tvline.com';
+  URL[ 6] := 'https://yesmovies.to';
+  URL[ 7] := 'https://tvseriesfinale.com';
+  URL[ 8] := 'https://extratorrent.ag';
+  URL[ 9] := 'https://cachetorrent.com';
+  URL[10] := 'http://mkvtv.net';
+  URL[11] := 'http://openloadmovies.tv';
+  URL[12] := 'https://torrentz2.eu';
+  URL[13] := 'http://1337x.to';
+  URL[14] := 'https://www.google.com';
+  URL[15] := 'https://www.returndates.com';
+
+  Write ('Checking for URK file ', TVListLnkName, '... ');  
+
+  IF NOT FileExists (TVListLnkName) THEN
+    BEGIN
+	  Write ('Generating URK defaults...');
+	  Assign (T, TVListLnkName);
+	  ReWrite (T);
+	  FOR I := 1 TO TVListLnkSize DO
+		WriteLn (T, URL[I]);
+	  Close (T);	
+	  WriteLn ('Done!');
+	END
+  ELSE
+    BEGIN
+	  Write ('Loading URK defaults...');
+	  Assign (T, TVListLnkName);
+	  Reset (T);
+	  FOR I := 1 TO TVListLnkSize DO 
+	    ReadLn (T, URL[I]);
+      Close (T);
+	  WriteLn ('Done!');
+	END;
+	
+  LinkURL[ 1] := URL[ 1];
+  LinkURL[ 2] := URL[ 1] + '/search/';
+  LinkURL[ 3] := URL[ 2] + '/search/';
+  LinkURL[ 4] := URL[ 3] + '/search?q=';
+  LinkURL[ 5] := URL[ 4] + '/results/#?q=';
+  LinkURL[ 6] := URL[ 5] + '/tag/'; 
+  LinkURL[ 7] := URL[ 6] + '/search/';
+  LinkURL[ 8] := URL[ 7] + '/tv-show/';
+  LinkURL[ 9] := URL[ 8] + '/search/?search=';
+  LinkURL[10] := URL[ 9] + '/search/all/';
+  LinkURL[11] := URL[10] + '/?s=';
+  LinkURL[12] := URL[11] + '/?s=';
+  LinkURL[13] := URL[12] + '/verified?f=';
+  LinkURL[14] := URL[13] + '/search/';
+  LinkURL[15] := URL[14] + '/search?&q=';
+END;  
 
 PROCEDURE RuntimeError (Msg: String);
 BEGIN
@@ -219,28 +257,30 @@ PROCEDURE Write_Bookmarks;
 	RepeatStr := X;  
   END;
 BEGIN
-  Write (T, 'Homepages for <TT>');
+  Write (T, '<TT>Homepages for&nbsp;');
 
-  Write (T, '<A HREF="', URL_EZTV, '" TARGET="_BLANK">EZTV</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_TPB, '" TARGET="_BLANK">The Pirate Bay</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_MKVTV, '" TARGET="_BLANK">MKVTV</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_LimeTorrent, '" TARGET="_BLANK">Lime Torrent</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_ExtraTorrent, '" TARGET="_BLANK">Extra Torrent</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_Torz2, '" TARGET="_BLANK">Torrentz2</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_Leetx, '" TARGET="_BLANK">1337x</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_TV, '" TARGET="_BLANK">TV</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 1], '" TARGET="_BLANK">EZTV</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 2], '" TARGET="_BLANK">The Pirate Bay</A>,&nbsp;');
+{  
+  Write (T, '<A HREF="', URL[10], '" TARGET="_BLANK">MKVTV</A>,&nbsp;');
+}
+  Write (T, '<A HREF="', URL[ 9], '" TARGET="_BLANK">Lime Torrent</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 8], '" TARGET="_BLANK">Extra Torrent</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[12], '" TARGET="_BLANK">Torrentz2</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[13], '" TARGET="_BLANK">1337x</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 3], '" TARGET="_BLANK">TV</A>,&nbsp;');
 {
   Write (T, '<BR>', RepeatStr ('&nbsp;', 13));
 }
-  Write (T, '<A HREF="', URL_Variety, '" TARGET="_BLANK">Variety</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_TVLine, '" TARGET="_BLANK">TV Line</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_TVSeriesFinale, '" TARGET="_BLANK">TV Series Finale</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_Openload, '" TARGET="_BLANK">Openload</A>,&nbsp;');
-  Write (T, '<A HREF="', URL_ReturnDates, '" TARGET="_BLANK">Return Dates</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 4], '" TARGET="_BLANK">Variety</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 5], '" TARGET="_BLANK">TV Line</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 7], '" TARGET="_BLANK">TV Series Finale</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[11], '" TARGET="_BLANK">Openload</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[15], '" TARGET="_BLANK">Return Dates</A>,&nbsp;');
   
   Write (T, 'and&nbsp;');
   
-  Write (T, '<A HREF="', URL_YesMovies, '" TARGET="_BLANK">Yes Movies</A>');
+  Write (T, '<A HREF="', URL[ 6], '" TARGET="_BLANK">Yes Movies</A>');
 
   WriteLn (T, '</TT>');
 END;
@@ -335,12 +375,27 @@ BEGIN
   LineCount := 0;
 END;
 
+PROCEDURE ExtractComments;
+VAR
+  A : Word;
+BEGIN
+  ComText := '';
+  A := Pos('@', W);  
+  IF A < 1 THEN
+    EXIT;
+  ComText := W;
+  Delete (ComText, 1, A);
+  Delete (W, A, (Length(W) - A) + 1);
+END;
+
+
 PROCEDURE ProcessData;
 BEGIN
   WHILE NOT Eof (S) DO
     BEGIN
       REPEAT
         ReadLn (S, W);
+		ExtractComments;
       UNTIL (W[1] <> '#') OR Eof(S);
       ShowDay := '<B>&#91;UNKWN&#93;</B>';
       IF W[2] = '|' THEN
@@ -373,7 +428,13 @@ BEGIN
 		    Write (T, ' BGCOLOR=', Line2_BGColor);
 {$ENDIF}
 
-		  Write (T, '><TD>', XN, '</TD>');
+		  Write (T, '><TD>');
+		  IF ComText <> '' THEN 
+		    Write (T, '<DIV TITLE="', ComText, '"><FONT COLOR=', ComText_Color, '>');
+          Write (T, XN);
+		  IF ComText <> '' THEN 
+		    Write (T, '</FONT></DIV>');
+		  Write (T, '</TD>');
 		
           XL := '';
           FOR I := (V + 1) TO Length (W) DO
@@ -384,27 +445,25 @@ BEGIN
         
 		  Write (T, TDStr);
 		  IF XL <> '0//' THEN
-            Write (T, '<A HREF="', Link_EZTV, '/shows/', XL, '" TARGET="_BLANK">Info</A>,&nbsp;');
-          
-		  Write (T, '<A HREF="', Link_EZTV_Search, RepSpaceStr('-', XN), '" TARGET="_BLANK">Search</A></TD>');
+            Write (T, '<A HREF="', LinkURL[ 1], '/shows/', XL, '" TARGET="_BLANK">Info</A>,&nbsp;');
+		  Write (T, '<A HREF="', LinkURL[ 2], RepSpaceStr('-', XN), '" TARGET="_BLANK">Search</A></TD>');
+
+		  Write (T,  TDStr + '<A HREF="', LinkURL[15], RepSpaceStr('+', XN), '+%2BTV+%2BShow" TARGET="_BLANK">Google</A>');
+
+          Write (T, TDStr + '<A HREF="', LinkURL[ 3], XN, '/" TARGET="_BLANK">PirateBay</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[10], XN, '/" TARGET="_BLANK">LimeTor</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[ 9], RepSpaceStr('+', XN), '" TARGET="_BLANK">ExtraTor</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[13], RepSpaceStr('+', XN), '&safe=1" TARGET="_BLANK">Torz2</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '/1/" TARGET="_BLANK">1337x</A></TD>');
 		
-		  Write (T,  TDStr + '<A HREF="', Link_Google, RepSpaceStr('+', XN), '+%2BTV+%2BShow" TARGET="_BLANK">Google</A>');
+          Write (T, TDStr + '<A HREF="', LinkURL[ 4], XN, '" TARGET="_BLANK">TVcom</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[ 8], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVfinale</A></TD>');
 		
-          Write (T, TDStr + '<A HREF="', Link_TPB, XN, '/" TARGET="_BLANK">PirateBay</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_MKVTV, RepSpaceStr('+', XN), '" TARGET="_BLANK">MkvTV</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_LimeTorrent, XN, '/" TARGET="_BLANK">LimeTor</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_ExtraTorrent, RepSpaceStr('+', XN), '" TARGET="_BLANK">ExtraTor</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_Torz2, RepSpaceStr('+', XN), '&safe=1" TARGET="_BLANK">Torz2</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_Leetx, RepSpaceStr('+', XN), '/1/" TARGET="_BLANK">1337x</A></TD>');
+          Write (T, TDStr + '<A HREF="', LinkURL[ 5], XN, '" TARGET="_BLANK">Variety</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[ 6], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVLine</A></TD>');
 		
-          Write (T, TDStr + '<A HREF="', Link_TVcom, XN, '" TARGET="_BLANK">TVcom</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_TVSF, RepSpaceStr('-', XN), '" TARGET="_BLANK">TVfinale</A></TD>');
-		
-          Write (T, TDStr + '<A HREF="', Link_Variety_Search, XN, '" TARGET="_BLANK">Variety</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_TVLine, RepSpaceStr('-', XN), '" TARGET="_BLANK">TVLine</A></TD>');
-		
-          Write (T, TDStr + '<A HREF="', Link_YesMovies_Search, RepSpaceStr('+', XN), '.html" TARGET="_BLANK">YesMovies</A>,&nbsp;');
-          Write (T, '<A HREF="', Link_Openload, RepSpaceStr('+', XN), '" TARGET="_BLANK">Openload</A></TD>');
+          Write (T, TDStr + '<A HREF="', LinkURL[ 7], RepSpaceStr('+', XN), '.html" TARGET="_BLANK">YesMovies</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[12], RepSpaceStr('+', XN), '" TARGET="_BLANK">Openload</A></TD>');
 
           WriteLn (T, '</TR>');
           Write ('.');
@@ -445,6 +504,7 @@ END;
 BEGIN
   GetDateTime;
   Prog_Message;
+  URLInit;
   ProcessFilesOpen;
   CheckForProgIcon;
   ProcessData;
