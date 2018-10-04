@@ -13,72 +13,102 @@
 #     N            = 0..7, 0=Sunday, 1=Monday, etc. 7=Unknown, Y=Break, Z=Ended
 #     Name         = Name of Show
 #     Path         = EZTV Path to your specific show, if EZTV does not have a dedicated page use "0//"
+#     @            = Will add text as a mouse-over comment to series name.
 #
 #     
 
-7|A Series of Unfortunate Events,0//
-7|Altered Carbon,0//
-7|Arrow,679/arrow/
-Z|Babylon 5,0//
-7|Black Lightning,0//
-0|Blue Planet II,2506/blue-planet-ii/
-7|Burn Notice,39/burn-notice/
-3|Chance,2191/chance/
-2|Cyberwar,2469/cyberwar/
-Z|Dark Matter,1275/dark-matter/
-2|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
-7|Elementary,715/elementary/
-0|Extinct,0//
-Y|Freakish,2075/freakish/
-7|Future Man,0//
-4|Ghost Wars,2464/ghost-wars/
-0|Ghosted,2155/ghosted/
-0|Good Behavior,1964/good-behavior/
-7|HC Spy Web International Espionage,0//
-3|Highway Thru Hell,0//
-Y|I am Frankie,2239/i-am-frankie/
-7|Jean Claude Van Johnson,0//
-Y|Killjoys,1281/killjoys/
-3|Knightfall,0//
-7|Krypton,0//
-Y|Legion,2003/legion/
-1|Lucifer,1582/lucifer/
-5|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
-Z|Marvels Inhumans,2156/inhumans/
-2|Marvels Runaways,0//
-Y|Marvels The Punisher,2536/the-punisher/
+5|A Discovery of Witches,3037/a-discovery-of-witches/
+3|A Million Little Things,3260/a-million-little-things/
+#7|A Series of Unfortunate Events,0//
+#Y|Action Team,2693/action-team/
+Y|Altered Carbon,2648/altered-carbon/
+#4|Arrow,679/arrow/
+#0|Ash vs Evil Dead,1474/ash-vs-evil-dead/
+#Z|Babylon 5,0//
+#0|Barry,2738/barry/
+Y|Black Lightning,2621/black-lightning/@Returning 9-Oct-2018
+#Z|Blue Planet II,2506/blue-planet-ii/
+Y|Burden of Truth,2757/burden-of-truth/
+#Z|Burn Notice,39/burn-notice/
+#2|Carter,2908/carter/
+#Z|Chance,2191/chance/
+Y|Cloak and Dagger,2928/cloak-and-dagger/@Returning Spring 2019
+#Y|Cyberwar,2469/cyberwar/
+#Z|Dark Matter,1275/dark-matter/
+Y|DCs Legends of Tomorrow,1568/legends-of-tomorrow/@Returning 22-Oct-2018
+#0|Deception 2018,758/deception/
+Y|Disenchantment,2979/disenchantment/
+#Y|Elementary,715/elementary/
+#Z|Extinct,0//
+#Y|Freakish,2075/freakish/
+#7|Future Man,0//
+#Y|Ghost Wars,2464/ghost-wars/
+#0|Ghosted,2155/ghosted/
+#Y|Good Behavior,1964/good-behavior/
+#3|Hard Sun,2606/hard-sun/
+Y|Harrow,2730/harrow/
+#Z|HC Spy Web International Espionage,0//
+#Y|Highway Thru Hell,0//
+#Y|Here and Now 2018,2824/here-and-now/
+#Y|I am Frankie,2239/i-am-frankie/
+Y|Impulse,2925/impulse/
+Y|Instinct,2825/instinct/
+#Z|Jean Claude Van Johnson,0//
+5|Killjoys,1281/killjoys/
+Y|Krypton,2724/krypton/
+#2|Legion,2003/legion/
+Y|Lucifer,1582/lucifer/
+Y|Lucky Man,1584/stan-lees-lucky-man/
+1|Manifest,3228/manifest/
+Y|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
+#Z|Marvels Inhumans,2156/inhumans/
+Y|Marvels Runaways,0//@Returning 21-Dec-2018
+#Y|Marvels The Punisher,2536/the-punisher/
 Y|Mindhunter,2489/mindhunter/
-3|Mr Robot,1250/mr-robot/
-7|Multiple Man,0//
-7|Nightflyers,0//
-7|No Activity,0//
-X|Nurses Who Kill,0//
-Y|Sense8,2015/sense8/
-Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/
-7|Shot in the Dark,0//
-7|Somethings Killing Me,0//
-3|Stan Against Evil,0//
+#Y|Mr Robot,1250/mr-robot/
+#7|Multiple Man,0//
+#7|Nightflyers,0//
+#7|No Activity,0//
+#Z|Nurses Who Kill,0//
+Y|Our Cartoon President,2668/our-cartoon-president/
+#2|Roseanne,2753/roseanne/
+Y|Reverie,2917/reverie/
+#Y|Sense8,2015/sense8/
+Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/@Cancelled?
+0|Shameless,440/shameless-us/
+#7|Shot in the Dark,0//
+Y|Siren,2769/siren/@Returning 7-Feb-2019
+#7|Somethings Killing Me,0//
+#3|Stan Against Evil,0//
 Y|Star Trek Discovery,2249/star-trek-discovery/
-0|Star Wars Rebels,1119/star-wars-rebels/
-7|Stargate Origins,0//
-7|Supergirl,1222/supergirl/
-5|Superstition,0//
-Z|The 4400,2523/the-4400/
-7|The Alienist,0//
+#Z|Star Wars Rebels,1119/star-wars-rebels/
+#Z|Stargate Origins,2663/stargate-origins/
+#4|Strange Angel,2935/strange-angel/
+#1|Supergirl,1222/supergirl/
+#Y|Superstition,0//
+#Z|The 4400,2523/the-4400/
+#Z|The Alienist,2628/the-alienist/
 4|The Big Bang Theory,23/the-big-bang-theory/
+#1|The Crossing,2722/the-crossing/
 Y|The Expanse,1342/the-expanse/
-7|The Flash,1058/the-flash-2014/
-1|The Gifted,2162/the-gifted/
+#2|The Flash,1058/the-flash-2014/
+2|The Gifted,2162/the-gifted/
 1|The Good Doctor,2160/the-good-doctor/
-7|The Indian Detective,0//
-3|The Librarians,1150/the-librarians/
+#Z|The Indian Detective,0//
+Y|The L Word,148/the-l-word/
+#Y|The Librarians,1150/the-librarians/
 Y|The Magicians,1527/the-magicians/
-Z|The Night Shift,1041/the-night-shift/
-4|The Orville,2151/the-orville/
-3|The Shannara Chronicles,1585/the-shannara-chronicles/
+#Z|The Night Shift,1041/the-night-shift/
+Y|The Orville,2151/the-orville/@Returning 30-Dec-2018
+2|The Outpost,2954/the-outpost/
+#Z|The Shannara Chronicles,1585/the-shannara-chronicles/
 0|The Simpsons,249/the-simpsons/
-7|The Story of Us With Morgan Freeman,0//
-3|The X-Files,1579/the-x-files/
-Y|Transparent,1520/transparent/
-7|Will and Grace,0//
+#Z|The Story of Us With Morgan Freeman,0//
+#6|The Tesla Files,0//
+#Y|The X-Files,1579/the-x-files/
+#0|Timeless,1919/timeless/
+#Y|Transparent,1520/transparent/
+#3|Unveiled,2682/unveiled/
+Y|Westworld,1913/westworld/
+#7|Will and Grace,0//
 4|Young Sheldon,2250/young-sheldon/
