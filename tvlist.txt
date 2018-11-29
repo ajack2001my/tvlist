@@ -8,107 +8,68 @@
 #
 # Format is:
 #
-#     N|Name,Path
+#     N|Name,Path@Comment
 #
-#     N            = 0..7, 0=Sunday, 1=Monday, etc. 7=Unknown, Y=Break, Z=Ended
+#     N            = 0..7, 0=Sunday, 1=Monday, etc.; 7=Unknown, Y=Break, Z=Ended
 #     Name         = Name of Show
 #     Path         = EZTV Path to your specific show, if EZTV does not have a dedicated page use "0//"
-#     @            = Will add text as a mouse-over comment to series name.
+#     @            = Will add text as a mouse-over comment to series name. Should be at the end of line.
 #
 #     
 
-5|A Discovery of Witches,3037/a-discovery-of-witches/
+Y|A Discovery of Witches,3037/a-discovery-of-witches/
 3|A Million Little Things,3260/a-million-little-things/
-#7|A Series of Unfortunate Events,0//
-#Y|Action Team,2693/action-team/
 Y|Altered Carbon,2648/altered-carbon/
 #4|Arrow,679/arrow/
-#0|Ash vs Evil Dead,1474/ash-vs-evil-dead/
-#Z|Babylon 5,0//
-#0|Barry,2738/barry/
-Y|Black Lightning,2621/black-lightning/@Returning 9-Oct-2018
-#Z|Blue Planet II,2506/blue-planet-ii/
-Y|Burden of Truth,2757/burden-of-truth/
-#Z|Burn Notice,39/burn-notice/
-#2|Carter,2908/carter/
-#Z|Chance,2191/chance/
-Y|Cloak and Dagger,2928/cloak-and-dagger/@Returning Spring 2019
-#Y|Cyberwar,2469/cyberwar/
-#Z|Dark Matter,1275/dark-matter/
-Y|DCs Legends of Tomorrow,1568/legends-of-tomorrow/@Returning 22-Oct-2018
-#0|Deception 2018,758/deception/
+2|Black Lightning,2621/black-lightning/
+Y|Burden of Truth,2757/burden-of-truth/@Returning 9-Jan-2019
+0|Charmed,3434/charmed/
+Y|Cloak and Dagger,2928/cloak-and-dagger/@Returning Spring 2019 (20-Mar-2019..21-Jun-2019)
+1|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
+3|Deadly Class,0//@Starting 16-Jan-2019
 Y|Disenchantment,2979/disenchantment/
+0|Doctor Who,82/doctor-who-2005/
 #Y|Elementary,715/elementary/
-#Z|Extinct,0//
-#Y|Freakish,2075/freakish/
-#7|Future Man,0//
-#Y|Ghost Wars,2464/ghost-wars/
-#0|Ghosted,2155/ghosted/
-#Y|Good Behavior,1964/good-behavior/
-#3|Hard Sun,2606/hard-sun/
+2|FBI,3235/fbi/
 Y|Harrow,2730/harrow/
-#Z|HC Spy Web International Espionage,0//
-#Y|Highway Thru Hell,0//
-#Y|Here and Now 2018,2824/here-and-now/
-#Y|I am Frankie,2239/i-am-frankie/
+Y|I am Frankie,2239/i-am-frankie/
 Y|Impulse,2925/impulse/
-Y|Instinct,2825/instinct/
-#Z|Jean Claude Van Johnson,0//
-5|Killjoys,1281/killjoys/
+Y|Instinct,2825/instinct/@Returning Spring 2019 (20-Mar-2019..21-Jun-2019)
+Y|Killjoys,1281/killjoys/@Returning September 2019
 Y|Krypton,2724/krypton/
 #2|Legion,2003/legion/
 Y|Lucifer,1582/lucifer/
 Y|Lucky Man,1584/stan-lees-lucky-man/
 1|Manifest,3228/manifest/
 Y|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
-#Z|Marvels Inhumans,2156/inhumans/
-Y|Marvels Runaways,0//@Returning 21-Dec-2018
+5|Marvels Runaways,0//@Returning 21-Dec-2018
 #Y|Marvels The Punisher,2536/the-punisher/
 Y|Mindhunter,2489/mindhunter/
-#Y|Mr Robot,1250/mr-robot/
-#7|Multiple Man,0//
-#7|Nightflyers,0//
-#7|No Activity,0//
-#Z|Nurses Who Kill,0//
+0|Nightflyers,0//@Premiering 2-Dec-2018
 Y|Our Cartoon President,2668/our-cartoon-president/
-#2|Roseanne,2753/roseanne/
+7|Raised by Wolves,0//
 Y|Reverie,2917/reverie/
 #Y|Sense8,2015/sense8/
-Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/@Cancelled?
+Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/@Returning Spring 2019 (20-Mar-2019..21-Jun-2019), possibly 30-Mar-2019
 0|Shameless,440/shameless-us/
-#7|Shot in the Dark,0//
-Y|Siren,2769/siren/@Returning 7-Feb-2019
-#7|Somethings Killing Me,0//
-#3|Stan Against Evil,0//
-Y|Star Trek Discovery,2249/star-trek-discovery/
-#Z|Star Wars Rebels,1119/star-wars-rebels/
-#Z|Stargate Origins,2663/stargate-origins/
-#4|Strange Angel,2935/strange-angel/
-#1|Supergirl,1222/supergirl/
+Y|Siren,2769/siren/@Returning 24-Jan-2019
+Y|Star Trek Discovery,2249/star-trek-discovery/@Returning 17-Jan-2019
+0|Supergirl,1222/supergirl/
 #Y|Superstition,0//
-#Z|The 4400,2523/the-4400/
-#Z|The Alienist,2628/the-alienist/
+0|The Bureau of Magical Things,3371/the-bureau-of-magical-things/
 4|The Big Bang Theory,23/the-big-bang-theory/
-#1|The Crossing,2722/the-crossing/
 Y|The Expanse,1342/the-expanse/
 #2|The Flash,1058/the-flash-2014/
 2|The Gifted,2162/the-gifted/
 1|The Good Doctor,2160/the-good-doctor/
-#Z|The Indian Detective,0//
 Y|The L Word,148/the-l-word/
-#Y|The Librarians,1150/the-librarians/
-Y|The Magicians,1527/the-magicians/
-#Z|The Night Shift,1041/the-night-shift/
-Y|The Orville,2151/the-orville/@Returning 30-Dec-2018
-2|The Outpost,2954/the-outpost/
-#Z|The Shannara Chronicles,1585/the-shannara-chronicles/
+3|The Magicians,1527/the-magicians/@Returning 23-Jan-2019
+0|The Orville,2151/the-orville/@Returning 30-Dec-2018
+Y|The Outpost,2954/the-outpost/
+2|The Rookie,3456/the-rookie/
 0|The Simpsons,249/the-simpsons/
-#Z|The Story of Us With Morgan Freeman,0//
-#6|The Tesla Files,0//
 #Y|The X-Files,1579/the-x-files/
-#0|Timeless,1919/timeless/
-#Y|Transparent,1520/transparent/
-#3|Unveiled,2682/unveiled/
+5|Titans,0//
 Y|Westworld,1913/westworld/
 #7|Will and Grace,0//
 4|Young Sheldon,2250/young-sheldon/

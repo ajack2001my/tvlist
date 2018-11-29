@@ -1,5 +1,10 @@
-{$DEFINE MASKLINKS}
-{$DEFINE ALTCOLORROWS}
+{
+
+CSS Highlight code adapted from 
+
+  URL http://www.java2s.com/Tutorials/HTML_CSS/Table/Style/Highlight_both_column_and_row_on_hover_in_CSS_only_in_HTML_and_CSS.htm
+
+}
 
 PROGRAM TVList;
 
@@ -13,12 +18,10 @@ USES
 
 CONST
   ProgName             = 'TVList';
-  ProgVer              = 'v0.9';
-  ProgDate             = '20181004';
+  ProgVer              = 'v0.9.2';
+  ProgDate             = '20181129';
   ProgAuthor           = 'Adrian Chiang';
-  ProgDesc             = 'A Torrent TV Series Manager';
-
-  HTML_FontName        = 'Calibri';
+  ProgDesc             = 'An EZTV Series Manager';
   
   MyBitCoin            = '1FSMJRMk65o25frAsBoMYoZEZMkqncQ4Jm';
     
@@ -44,20 +47,12 @@ CONST
  
   TDStr = '<TD ALIGN="CENTER">';
 
-  TVListString = 'tvlist';
-  TVList_Data  = TVListString + '.txt';
-  TVList_HTML  = TVListString + '.htm';
-  
-  Header_Color   = '"#FFFFFF"';
-  Header_BGColor = '"#000000"';
-  Link_Color     = '"#5F5F5F"';
-  VLink_Color    = '"#000000"';
-  Line1_BGColor  = '"#BBBBBB"';
-  Line2_BGColor  = '"#DDDDDD"';
-  ComText_Color  = '"#FF00FF"';
-  
+  TVListString  = 'tvlist';
+  TVList_Data   = TVListString + '.txt';
+  TVList_HTML   = TVListString + '.htm';
+  TVList_Config = TVListString + '.cfg';
   TVListLnkName = TVListString + '.urk';
-  TVListLnkSize = 15;
+  TVListLnkSize = 16;
   
   TVListPNGSize = 279;
   TVListPNGName = TVListString + '.png';
@@ -97,10 +92,20 @@ CONST
   
   VAR
   S,
-  T         : Text;
+  T                 : Text;
   LineCount,
   V,
-  I         : Word;
+  I                 : Word;
+  DHighlight,
+  Highlight_BGColor,
+  HTML_FontName,
+  Header_Color,
+  Header_BGColor,
+  CSS_Link_Color,
+  CSS_VLink_Color,
+  Line1_BGColor,
+  Line2_BGColor,
+  ComText_Color,
   ComText,
   ShowDay,
   L1,
@@ -108,7 +113,7 @@ CONST
   L3,
   W,
   XN,
-  XL        : String;
+  XL                : String;
   xHo,
   xMi,
   xSe,
@@ -116,57 +121,129 @@ CONST
   xYe,
   xMo,
   xDa,
-  xuDa      : Word;
+  xuDa              : Word;
   xStart, 
-  xEnd      : QWord;
-  xDiff     : Real;
+  xEnd              : QWord;
+  xDiff             : Real;
   LinkURL,
-  URL       : Array[1..15] of String;
-  
-PROCEDURE URLInit;
+  URL               : Array[1..TVListLnkSize] of String;
+  DisplayHighlight  : Boolean;
+
+PROCEDURE VARInit;
 VAR
-    I : Word;
-	T : Text;
+  C : Text;
+  X : String;
+  PROCEDURE _UpdateVAR (VAR N: String; S, R: String);
+  VAR
+    P : String;
+	I : Word;
+  BEGIN
+    P := R;
+	WHILE (P[1] = ' ') AND (Length(P) > 1) DO 
+	  Delete (P, 1, 1);
+    Delete (P, 1, Length(S) + 1);
+	I := Pos(' ', P);
+	IF I > 1 THEN
+	  Delete (P, I, (Length(P) - I) + 1);
+    N := P;	
+  END;
 BEGIN
-  URL[ 1] := 'https://eztv.ag';
-  URL[ 2] := 'https://thepiratebay.org';
+  URL[ 1] := 'https://eztv.io';                            {URL_EZTV}
+  URL[ 2] := 'https://thepiratebay.org';                   {URL_ThePirateBay}
   URL[ 3] := 'http://www.tv.com';
   URL[ 4] := 'http://variety.com';
   URL[ 5] := 'http://tvline.com';
-  URL[ 6] := 'https://yesmovies.to';
+  URL[ 6] := 'https://yesmovies.to';                       {URL_YesMovies}
   URL[ 7] := 'https://tvseriesfinale.com';
-  URL[ 8] := 'https://extratorrent.ag';
-  URL[ 9] := 'https://cachetorrent.com';
-  URL[10] := 'http://mkvtv.net';
-  URL[11] := 'http://openloadmovies.tv';
-  URL[12] := 'https://torrentz2.eu';
-  URL[13] := 'http://1337x.to';
-  URL[14] := 'https://www.google.com';
+  URL[ 8] := 'https://extratorrent.ag';                    {URL_ExtraTorrent}
+  URL[ 9] := 'https://cachetorrent.com';                   {URL_LimeTorrent}
+  URL[10] := 'http://www1.123movies.cc';                   {URL_123Movies}
+  URL[11] := 'http://openloadmovies.tv';                   {URL_Openload}
+  URL[12] := 'https://torrentz2.eu';                       {URL_TorrentZ2}
+  URL[13] := 'http://1337x.to';                            {URL_1337x}
+  URL[14] := 'https://www.google.com';                     {URL_Google}
   URL[15] := 'https://www.returndates.com';
+  URL[16] := 'https://torrentgalaxy.org';                  {URL_TorGalaxy}
 
-  Write ('Checking for URK file ', TVListLnkName, '... ');  
+  HTML_FontName     := 'Calibri';  
+  Header_Color      := '"#FFFFFF"';
+  Header_BGColor    := '"#000000"';
+  CSS_Link_Color   := '#000';
+  CSS_VLink_Color  := '#666';
+  Line1_BGColor     := '"#FFFFFF"';
+  Line2_BGColor     := '"#D0D0D0"';
+  ComText_Color     := '"#FF0000"';
+  Highlight_BGColor := '#FF0';
+  
+  DHighlight := '';
+  DisplayHighlight := True;
 
-  IF NOT FileExists (TVListLnkName) THEN
+  IF FileExists (TVList_Config) THEN
     BEGIN
-	  Write ('Generating URK defaults...');
-	  Assign (T, TVListLnkName);
-	  ReWrite (T);
-	  FOR I := 1 TO TVListLnkSize DO
-		WriteLn (T, URL[I]);
-	  Close (T);	
-	  WriteLn ('Done!');
-	END
-  ELSE
-    BEGIN
-	  Write ('Loading URK defaults...');
-	  Assign (T, TVListLnkName);
-	  Reset (T);
-	  FOR I := 1 TO TVListLnkSize DO 
-	    ReadLn (T, URL[I]);
-      Close (T);
-	  WriteLn ('Done!');
+	  Assign (C, TVList_Config);
+	  Reset (C);
+	    WHILE NOT Eof(C) DO 
+		  BEGIN
+		    ReadLn (C, X);
+			IF (X[1] <> '#') THEN
+			  BEGIN
+    			IF Pos ('Highlight=', X) > 0 THEN
+				  BEGIN
+ 	    		    _UpdateVAR (DHighlight, 'Highlight', X);
+					IF UpCase(DHighlight[1]) = 'Y' THEN
+					  DisplayHighlight := True
+					ELSE  
+					  DisplayHighlight := False;
+				  END;
+				  
+    			IF Pos ('URL_YesMovies=', X) > 0 THEN
+	    		  _UpdateVAR (URL[6], 'URL_YesMovies', X);
+    			IF Pos ('URL_123Movies=', X) > 0 THEN
+	    		  _UpdateVAR (URL[10], 'URL_123Movies', X);
+    			IF Pos ('URL_Openload=', X) > 0 THEN
+	    		  _UpdateVAR (URL[11], 'URL_Openload', X);
+    			IF Pos ('URL_EZTV=', X) > 0 THEN
+	    		  _UpdateVAR (URL[1], 'URL_EZTV', X);
+    			IF Pos ('URL_Google=', X) > 0 THEN
+	    		  _UpdateVAR (URL[14], 'URL_Google', X);
+    			IF Pos ('URL_ThePirateBay=', X) > 0 THEN
+	    		  _UpdateVAR (URL[2], 'URL_ThePirateBay', X);
+    			IF Pos ('URL_TorGalaxy=', X) > 0 THEN
+	    		  _UpdateVAR (URL[16], 'URL_TorGalaxy', X);
+    			IF Pos ('URL_ExtraTorrent=', X) > 0 THEN
+	    		  _UpdateVAR (URL[8], 'URL_ExtraTorrent', X);
+    			IF Pos ('URL_LimeTorrent=', X) > 0 THEN
+	    		  _UpdateVAR (URL[9], 'URL_LimeTorrent', X);
+    			IF Pos ('URL_TorrentZ2=', X) > 0 THEN
+	    		  _UpdateVAR (URL[12], 'URL_TorrentZ2', X);
+    			IF Pos ('URL_1337x=', X) > 0 THEN
+	    		  _UpdateVAR (URL[13], 'URL_1337x', X);
+				  
+        		IF Pos ('HTML_FontName=', X) > 0 THEN
+	    		  _UpdateVAR (HTML_FontName, 'HTML_FontName', X);
+				  
+		    	IF Pos ('Header_Color=', X) > 0 THEN
+			      _UpdateVAR (Header_Color, 'Header_Color', X);
+    			IF Pos ('Header_BGColor=', X) > 0 THEN
+	    		  _UpdateVAR (Header_BGColor, 'Header_BGColor', X);
+		    	IF Pos ('CSS_Link_Color=', X) > 0 THEN
+			      _UpdateVAR (CSS_Link_Color, 'CSS_Link_Color', X);
+    			IF Pos ('CSS_VLink_Color=', X) > 0 THEN
+	    		  _UpdateVAR (CSS_VLink_Color, 'CSS_VLink_Color', X);
+
+				IF Pos ('Highlight_BGColor=', X) > 0 THEN
+	    		  _UpdateVAR (Highlight_BGColor, 'Highlight_BGColor', X);
+	  
+		    	IF Pos ('Line1_BGColor=', X) > 0 THEN
+			      _UpdateVAR (Line1_BGColor, 'Line1_BGColor', X);
+    			IF Pos ('Line2_BGColor=', X) > 0 THEN
+	    		  _UpdateVAR (Line2_BGColor, 'Line2_BGColor', X);
+		    	IF Pos ('ComText_Color=', X) > 0 THEN
+			      _UpdateVAR (ComText_Color, 'ComText_Color', X);
+			  END;
+		  END;
+		Close (C);  
 	END;
-	
   LinkURL[ 1] := URL[ 1];
   LinkURL[ 2] := URL[ 1] + '/search/';
   LinkURL[ 3] := URL[ 2] + '/search/';
@@ -181,8 +258,9 @@ BEGIN
   LinkURL[12] := URL[11] + '/?s=';
   LinkURL[13] := URL[12] + '/verified?f=';
   LinkURL[14] := URL[13] + '/search/';
-  LinkURL[15] := URL[14] + '/search?&q=';
-END;  
+  LinkURL[15] := URL[14] + '/search?&q=';	
+  LinkURL[16] := URL[16] + '/torrents.php?search=';	  
+END;
 
 PROCEDURE RuntimeError (Msg: String);
 BEGIN
@@ -215,15 +293,49 @@ END;
 PROCEDURE Write_HTML_Headers;
 BEGIN
   WriteLn (T, '<!DOCTYPE HTML>'); 
-  WriteLn (T, '<HTML><HEAD><TITLE>', ProgName, ' ', ProgVer, 
-           '</TITLE><LINK REL="icon" TYPE="image/png" HREF="', TVListPNGName, '" /></HEAD>');
-  Write   (T, '<BODY');
+  WriteLn (T, '<HTML><HEAD><META CHARSET="UTF-8"/><TITLE>', ProgName, ' ', ProgVer, 
+           '</TITLE><LINK REL="icon" TYPE="image/png" HREF="', TVListPNGName, '" />');
 
-{$IFDEF MASKLINKS}  
-  Write   (T, ' LINK=', Link_Color, ' ALINK=', VLink_Color, ' VLINK=', VLink_Color);
-{$ENDIF} 
- 
-  WriteLn (T, '>');
+  IF DisplayHighlight THEN
+    BEGIN
+	  WriteLn (T);
+	  WriteLn (T, '<style>');
+	  WriteLn (T, '.myTable {}');
+	  WriteLn (T, '.myTable thead th {}');
+	  WriteLn (T, '.myTable tbody td {}');
+	  WriteLn (T);
+	  WriteLn (T, '.myTable-highlight-all {');
+	  WriteLn (T, '    overflow: hidden;');
+	  WriteLn (T, '    z-index: 1;');
+	  WriteLn (T, '}');
+	  WriteLn (T);
+	  WriteLn (T, '.myTable-highlight-all tbody td, .myTable-highlight-all thead th {');
+	  WriteLn (T, '    position: relative;');
+	  WriteLn (T, '}');
+	  WriteLn (T);
+	  WriteLn (T, '.myTable-highlight-all tbody td:hover::before {');
+	  WriteLn (T, '    background-color: ', Highlight_BGColor, ';');
+	  WriteLn (T, '    content:''\00a0'';');
+	  WriteLn (T, '    height: 100%;');
+	  WriteLn (T, '    left: -5000px;');
+	  WriteLn (T, '    position: absolute;');
+	  WriteLn (T, '    top: 0;');
+	  WriteLn (T, '    width: 10000px;');
+	  WriteLn (T, '    z-index: -1;');
+	  WriteLn (T, '}');
+	  WriteLn (T);
+	  WriteLn (T, 'a:link {');
+      WriteLn (T, '    color: ', CSS_Link_Color, ';');
+	  WriteLn (T, '}');
+	  WriteLn (T);
+	  WriteLn (T, 'a:visited {');
+      WriteLn (T, '    color: ', CSS_VLink_Color, ';');
+	  WriteLn (T, '}');
+	  WriteLn (T, '</style>');
+	  WriteLn (T);
+	END;
+	
+  Write   (T, '</HEAD><BODY>');
 END;
 
 PROCEDURE Write_Headers;
@@ -232,8 +344,11 @@ BEGIN
   WriteLn (T, '<FONT SIZE=+1>', L1, '<BR>');
   WriteLn (T, '&copy;' + L2 + '<P></FONT>');
   WriteLn (T, '<FONT SIZE=-1><I>' + L3 + '</I><BR>');
-
-  Write   (T, '<TABLE WIDTH="100%" BORDER=1><TR BGCOLOR=', Header_BGColor, '>');
+  IF DisplayHighlight THEN
+    Write   (T, '<TABLE class="myTable myTable-highlight-all" WIDTH="100%" BORDER=1><THEAD><TR BGCOLOR=', Header_BGColor, '>')
+  ELSE
+    Write   (T, '<TABLE WIDTH="100%" BORDER=1><TR BGCOLOR=', Header_BGColor, '>');
+	
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_Show, '"><FONT COLOR=', Header_Color, '>Show</FONT></DIV></TH>');
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_Airs, '"><FONT COLOR=', Header_Color, '>Airs</FONT></DIV></TH>');
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_EZTV, '"><FONT COLOR=', Header_Color, '>EZTV</FONT></DIV></TH>');
@@ -243,6 +358,8 @@ BEGIN
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_TVNews, '"><FONT COLOR=', Header_Color, '>TV News</FONT></DIV></TH>');
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_Online, '"><FONT COLOR=', Header_Color, '>Watch Online</FONT></DIV></TH>');
   WriteLn (T, '</TR>');
+  IF DisplayHighlight THEN
+    WriteLn (T, '</THEAD>');
 END;
 
 PROCEDURE Write_Bookmarks;
@@ -265,6 +382,7 @@ BEGIN
   Write (T, '<A HREF="', URL[10], '" TARGET="_BLANK">MKVTV</A>,&nbsp;');
 }
   Write (T, '<A HREF="', URL[ 9], '" TARGET="_BLANK">Lime Torrent</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[16], '" TARGET="_BLANK">Torrent Galaxy</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 8], '" TARGET="_BLANK">Extra Torrent</A>,&nbsp;');
   Write (T, '<A HREF="', URL[12], '" TARGET="_BLANK">Torrentz2</A>,&nbsp;');
   Write (T, '<A HREF="', URL[13], '" TARGET="_BLANK">1337x</A>,&nbsp;');
@@ -332,7 +450,7 @@ END;
 PROCEDURE Prog_Message;
 BEGIN
   L1 := ProgName + ' ' + ProgVer + ' - ' + ProgDesc + ' - Created by ' + ProgAuthor + '. Build ' + ProgDate;
-  L2 := ' Copyright ' + ProgAuthor + ', 2015-20' + ProgDate[3] + ProgDate[4] + '. All Rights Reserved.';
+  L2 := ' Copyright ' + ProgAuthor + ', 2015-20' + ProgDate[3] + ProgDate[4] + '. All Rights Reserved. Distributed under an MIT license.';
   L3 := 'List generated on ' + DayName[xuDa] + ', ' + Num2Str(xDa) + '-' + MonthName[xMo] + '-' +
         Num2Str(xYe) + ', ' + Num2Str(xHo) + ':' + Num2Str(xMi) + ':' + Num2Str(xSe) + ' UTC' + 
 		R2S(GetLocalTimeOffset);
@@ -350,7 +468,6 @@ BEGIN
   GetDate (xYe, xMo, xDa, xuDa);
   GetTime (xHo, xMi, xSe, xuSe);
 END;
-
 
 FUNCTION RepSpaceStr (C: Char; X: String): String;
 VAR
@@ -421,12 +538,13 @@ BEGIN
             XN := XN + W[I];
           Write (T, '<TR');
 
-{$IFDEF ALTCOLORROWS}
-		  IF (LineCount MOD 2) = 0 THEN
-		    Write (T, ' BGCOLOR=', Line1_BGColor)
-		  ELSE	
-		    Write (T, ' BGCOLOR=', Line2_BGColor);
-{$ENDIF}
+          IF NOT DisplayHighlight THEN
+		    BEGIN
+    		  IF (LineCount MOD 2) = 0 THEN
+	    	    Write (T, ' BGCOLOR=', Line1_BGColor)
+		      ELSE	
+		        Write (T, ' BGCOLOR=', Line2_BGColor);
+			END;
 
 		  Write (T, '><TD>');
 		  IF ComText <> '' THEN 
@@ -453,6 +571,7 @@ BEGIN
           Write (T, TDStr + '<A HREF="', LinkURL[ 3], XN, '/" TARGET="_BLANK">PirateBay</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[10], XN, '/" TARGET="_BLANK">LimeTor</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[ 9], RepSpaceStr('+', XN), '" TARGET="_BLANK">ExtraTor</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[16], RepSpaceStr('+', XN), '" TARGET="_BLANK">TorGalaxy</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[13], RepSpaceStr('+', XN), '&safe=1" TARGET="_BLANK">Torz2</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '/1/" TARGET="_BLANK">1337x</A></TD>');
 		
@@ -500,13 +619,17 @@ BEGIN
     WriteLn ('Found, skipped!');
   WriteLn;	
 END;
-  
+
 BEGIN
   GetDateTime;
+  VARInit;
   Prog_Message;
-  URLInit;
   ProcessFilesOpen;
   CheckForProgIcon;
+  IF DisplayHighlight THEN
+    WriteLn (T, '<TBODY>');
   ProcessData;
+  IF DisplayHighlight THEN
+    WriteLn (T, '</TBODY>');
   ProcessFilesClose;
 END.
