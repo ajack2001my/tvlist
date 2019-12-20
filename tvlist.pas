@@ -1,10 +1,27 @@
-{
+{*
+
+TVList $ProgVer$
+
+An HTML generator for keeping track of your favorite shows from EZTV or create a TV series search if EZTV does not have a dedicated 
+show page as well as a quick search of various torrent search engines if episode is missing and check show status on TV.com. 
+
+Developed by Adrian Chiang in 2015, last updated on $ProgDate$.
+
+===================================================================================
+LEGALESSE
+
+This source code is public domain.  The coder is not liable for anything
+whatsoever.  The only guarantee it has is that it will take up storage space in
+your computer.  Oh! It would be nice if you gave me credit if you use this source
+code (in whole or in part).
+===================================================================================
 
 CSS Highlight code adapted from 
 
   URL http://www.java2s.com/Tutorials/HTML_CSS/Table/Style/Highlight_both_column_and_row_on_hover_in_CSS_only_in_HTML_and_CSS.htm
 
-}
+*}
+{$DEFINE NO_EASTEREGG}
 
 PROGRAM TVList;
 
@@ -18,8 +35,8 @@ USES
 
 CONST
   ProgName             = 'TVList';
-  ProgVer              = 'v0.9.2';
-  ProgDate             = '20181129';
+  ProgVer              = 'v0.9.3';
+  ProgDate             = '20191220';
   ProgAuthor           = 'Adrian Chiang';
   ProgDesc             = 'An EZTV Series Manager';
   
@@ -28,6 +45,8 @@ CONST
   CTime                = {$I %TIME%};
   CDate                = {$I %DATE%};
 
+  EZTVPageMax          = 512;
+  
   LL1 = '$' + ProgName + '(';
   LL2 = ') took ';
   LL3 = ' second(s) to generate HTML...';
@@ -51,52 +70,27 @@ CONST
   TVList_Data   = TVListString + '.txt';
   TVList_HTML   = TVListString + '.htm';
   TVList_Config = TVListString + '.cfg';
-  TVListLnkName = TVListString + '.urk';
+
   TVListLnkSize = 16;
-  
-  TVListPNGSize = 279;
-  TVListPNGName = TVListString + '.png';
-  TVListPNG: Array [1..TVListPNGSize] of Byte = (137,  80,  78,  71,  13,  10,  26,  10,   0,   0, 
-                                                   0,  13,  73,  72,  68,  82,   0,   0,   0,  16, 
-                                                   0,   0,   0,  16,   8,   6,   0,   0,   0,  31, 
-                                                 243, 255,  97,   0,   0,   0,   6,  98,  75,  71, 
-                                                  68,   0, 255,   0, 255,   0, 255, 160, 189, 167, 
-                                                 147,   0,   0,   0,   9, 112,  72,  89, 115,   0, 
-                                                   0,  11,  19,   0,   0,  11,  19,   1,   0, 154, 
-                                                 156,  24,   0,   0,   0,   7, 116,  73,  77,  69,
-                                                   7, 225,  10,  25,  10,  41,  25,  91, 215, 208, 
-                                                 206,   0,   0,   0, 164,  73,  68,  65,  84,  56, 
-                                                 203, 173, 146, 209,  13, 195,  32,  12,  68, 239, 
-                                                  60, 107,   6,  65, 140, 145,  17, 146,   5, 186, 
-                                                 221, 245, 163,  49, 114, 138,  67, 136,  90,  36, 
-                                                 139,   4, 124, 167, 103,  99,   2, 194, 179,  69, 
-                                                   1, 162, 255, 217,  47, 226, 129,   1,  53,  35,
-                                                  30,  24, 136, 103, 147,  92,  12,   0,  28, 247, 
-                                                 192,  77, 114, 113,  48, 224, 211,  78,  54,  82, 
-                                                 115, 241, 182,  97, 149, 132, 171,  88,  22, 188, 
-                                                  50,  66, 226, 168,  65, 186, 135,  32, 251,  74, 
-                                                  44, 138,  73, 182, 136,   2, 223,  61, 207, 169, 
-                                                 186,  87, 136,   9, 179, 107,  56,  72, 146,  64, 
-                                                 178,  51, 220, 119, 174, 141, 238, 147,  39, 100, 
-                                                  36,  89, 205, 209, 144, 228, 153, 192,   5, 102, 
-                                                 134,  90, 107, 215, 147, 152,  23, 207, 116,  80, 
-                                                 200, 191,  61,  74,  41, 237,  46, 187, 247,   9, 
-                                                 211,  55, 250, 236,  19, 254, 101,  18, 223,  20, 
-                                                  96, 119,  93, 183,   5, 255,  27,   0,   0,   0,
-                                                   0,  73,  69,  78,  68, 174,  66,  96, 130);
+
+  TVListPNGB64_1 = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTU';
+  TVListPNGB64_2 = 'UH4QoZCikZW9fQzgAAAKRJREFUOMutktENwyAMRO88awZBjJERkgW63fWjMXKKQ4haJIsEfKdnYwLCs0UBov/ZL+KBATUjHhiIZ5NcDAAc';
+  TVListPNGB64_3 = '98BNcnEw4NNONlJz8bZhlYSrWBa8MkLiqEG6hyD7SiyKSbaIAt89z6m6V4gJs2s4SJJAsjPcd66N7pMnZCRZzdGQ5JnABWaGWmvXk5gXz3';
+  TVListPNGB64_4 = 'RQyL89SintLrv3CdM3+uwT/mUS3xRgd123Bf8bAAAAAElFTkSuQmCC';
   
   MonthName : Array [1..12] of String = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
                                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
   DayName   : Array [0..6]  of String = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 
                                          'Thursday', 'Friday', 'Saturday');
   
-  VAR
+VAR
   S,
   T                 : Text;
   LineCount,
   V,
   I                 : Word;
-  DHighlight,
+  HTML_RefreshRate,
+  __DisplayHighlight,
   Highlight_BGColor,
   HTML_FontName,
   Header_Color,
@@ -108,6 +102,10 @@ CONST
   ComText_Color,
   ComText,
   ShowDay,
+  StatusUnknown,
+  StatusEnded,
+  StatusBreak,
+  StatusRunning,
   L1,
   L2,
   L3,
@@ -128,7 +126,11 @@ CONST
   LinkURL,
   URL               : Array[1..TVListLnkSize] of String;
   DisplayHighlight  : Boolean;
-
+  TK,
+  EZTVPage          : Array [1..EZTVPageMax] of String;
+  EZTVDay           : Array [1..EZTVPageMax] of Char;
+  EZTVPageCount     : Word;
+  
 PROCEDURE VARInit;
 VAR
   C : Text;
@@ -139,6 +141,11 @@ VAR
 	I : Word;
   BEGIN
     P := R;
+	IF (Pos('=', P) < 1) OR (Pos('= ', P) > 0) THEN
+	  BEGIN
+	    N := '';
+		EXIT;
+	  END;
 	WHILE (P[1] = ' ') AND (Length(P) > 1) DO 
 	  Delete (P, 1, 1);
     Delete (P, 1, Length(S) + 1);
@@ -148,6 +155,9 @@ VAR
     N := P;	
   END;
 BEGIN
+
+  EZTVPageCount := 0;
+  
   URL[ 1] := 'https://eztv.io';                            {URL_EZTV}
   URL[ 2] := 'https://thepiratebay.org';                   {URL_ThePirateBay}
   URL[ 3] := 'http://www.tv.com';
@@ -156,27 +166,33 @@ BEGIN
   URL[ 6] := 'https://yesmovies.to';                       {URL_YesMovies}
   URL[ 7] := 'https://tvseriesfinale.com';
   URL[ 8] := 'https://extratorrent.ag';                    {URL_ExtraTorrent}
-  URL[ 9] := 'https://cachetorrent.com';                   {URL_LimeTorrent}
-  URL[10] := 'http://www1.123movies.cc';                   {URL_123Movies}
-  URL[11] := 'http://openloadmovies.tv';                   {URL_Openload}
+  URL[ 9] := 'https://limetorrents.info';                  {URL_LimeTorrent}
+
+  URL[10] := '';
+  URL[11] := '';
+
   URL[12] := 'https://torrentz2.eu';                       {URL_TorrentZ2}
   URL[13] := 'http://1337x.to';                            {URL_1337x}
   URL[14] := 'https://www.google.com';                     {URL_Google}
   URL[15] := 'https://www.returndates.com';
-  URL[16] := 'https://torrentgalaxy.org';                  {URL_TorGalaxy}
+  URL[16] := 'https://torrentgalaxy.to';                   {URL_TorGalaxy}
 
-  HTML_FontName     := 'Calibri';  
-  Header_Color      := '"#FFFFFF"';
-  Header_BGColor    := '"#000000"';
-  CSS_Link_Color   := '#000';
-  CSS_VLink_Color  := '#666';
-  Line1_BGColor     := '"#FFFFFF"';
-  Line2_BGColor     := '"#D0D0D0"';
-  ComText_Color     := '"#FF0000"';
-  Highlight_BGColor := '#FF0';
-  
-  DHighlight := '';
-  DisplayHighlight := True;
+  HTML_FontName      := 'Calibri';  
+  Header_Color       := '"#FFFFFF"';
+  Header_BGColor     := '"#000000"';
+  CSS_Link_Color     := '#000';
+  CSS_VLink_Color    := '#666';
+  Line1_BGColor      := '"#FFFFFF"';
+  Line2_BGColor      := '"#D0D0D0"';
+  ComText_Color      := '"#FF0000"';
+  Highlight_BGColor  := '#FF0';
+  HTML_RefreshRate   := '';
+  __DisplayHighlight := '';
+  DisplayHighlight   := True;
+  StatusBreak        := '"#00EE00"';
+  StatusEnded        := '"#CC0000"';
+  StatusUnknown      := '"#FFA500"';
+  StatusRunning      := '"#000000"';
 
   IF FileExists (TVList_Config) THEN
     BEGIN
@@ -189,19 +205,19 @@ BEGIN
 			  BEGIN
     			IF Pos ('Highlight=', X) > 0 THEN
 				  BEGIN
- 	    		    _UpdateVAR (DHighlight, 'Highlight', X);
-					IF UpCase(DHighlight[1]) = 'Y' THEN
+ 	    		    _UpdateVAR (__DisplayHighlight, 'Highlight', X);
+					IF UpCase(__DisplayHighlight[1]) = 'Y' THEN
 					  DisplayHighlight := True
 					ELSE  
 					  DisplayHighlight := False;
 				  END;
 				  
+    			IF Pos ('HTML_RefreshRate=', X) > 0 THEN
+	    		  _UpdateVAR (HTML_RefreshRate, 'HTML_RefreshRate', X);
     			IF Pos ('URL_YesMovies=', X) > 0 THEN
 	    		  _UpdateVAR (URL[6], 'URL_YesMovies', X);
     			IF Pos ('URL_123Movies=', X) > 0 THEN
 	    		  _UpdateVAR (URL[10], 'URL_123Movies', X);
-    			IF Pos ('URL_Openload=', X) > 0 THEN
-	    		  _UpdateVAR (URL[11], 'URL_Openload', X);
     			IF Pos ('URL_EZTV=', X) > 0 THEN
 	    		  _UpdateVAR (URL[1], 'URL_EZTV', X);
     			IF Pos ('URL_Google=', X) > 0 THEN
@@ -240,6 +256,15 @@ BEGIN
 	    		  _UpdateVAR (Line2_BGColor, 'Line2_BGColor', X);
 		    	IF Pos ('ComText_Color=', X) > 0 THEN
 			      _UpdateVAR (ComText_Color, 'ComText_Color', X);
+
+                IF Pos ('Status_Break=', X) > 0 THEN
+			      _UpdateVAR (StatusBreak, 'Status_Break', X);
+                IF Pos ('Status_Running=', X) > 0 THEN
+			      _UpdateVAR (StatusRunning, 'Status_Running', X);
+                IF Pos ('Status_Unknown=', X) > 0 THEN
+			      _UpdateVAR (StatusUnknown, 'Status_Unknown', X);
+                IF Pos ('Status_Ended=', X) > 0 THEN
+			      _UpdateVAR (StatusEnded, 'Status_Ended', X);
 			  END;
 		  END;
 		Close (C);  
@@ -250,7 +275,7 @@ BEGIN
   LinkURL[ 4] := URL[ 3] + '/search?q=';
   LinkURL[ 5] := URL[ 4] + '/results/#?q=';
   LinkURL[ 6] := URL[ 5] + '/tag/'; 
-  LinkURL[ 7] := URL[ 6] + '/search/';
+  LinkURL[ 7] := URL[ 6] + '/searching/';
   LinkURL[ 8] := URL[ 7] + '/tv-show/';
   LinkURL[ 9] := URL[ 8] + '/search/?search=';
   LinkURL[10] := URL[ 9] + '/search/all/';
@@ -293,8 +318,9 @@ END;
 PROCEDURE Write_HTML_Headers;
 BEGIN
   WriteLn (T, '<!DOCTYPE HTML>'); 
-  WriteLn (T, '<HTML><HEAD><META CHARSET="UTF-8"/><TITLE>', ProgName, ' ', ProgVer, 
-           '</TITLE><LINK REL="icon" TYPE="image/png" HREF="', TVListPNGName, '" />');
+  Write (T, '<HTML><HEAD><META CHARSET="UTF-8"><META HTTP-EQUIV="REFRESH" CONTENT="', HTML_RefreshRate, '"><TITLE>', ProgName, ' ', ProgVer, 
+            '</TITLE><LINK REL="icon" TYPE="image/png" HREF="data:image/x-icon;base64,', TVListPNGB64_1, TVListPNGB64_2, TVListPNGB64_3, TVListPNGB64_4);
+  WriteLn (T, '" REL="icon" TYPE="image/x-icon" />');
 
   IF DisplayHighlight THEN
     BEGIN
@@ -363,6 +389,9 @@ BEGIN
 END;
 
 PROCEDURE Write_Bookmarks;
+VAR
+  J, 
+  K : Word;
   FUNCTION RepeatStr (S: String; N: Word):String;
   VAR
     I : Word;
@@ -373,34 +402,108 @@ PROCEDURE Write_Bookmarks;
 	  X := X + S;
 	RepeatStr := X;  
   END;
-BEGIN
-  Write (T, '<TT>Homepages for&nbsp;');
+  PROCEDURE _Pull (C: Char; VAR N: Word);
+  VAR 
+    J : Word;
+  BEGIN
+    J := 0;
+    FOR I := EZTVPageCount DOWNTO 1 DO 
+	  IF EZTVDay[I] = C THEN
+	    BEGIN
+		  Inc (J);
+		  TK[J] := EZTVPage[I];
+		  IF TK[J] = '' THEN 
+		    Dec (J);
+		END;
+	N := J;	
+  END;
+  PROCEDURE _Pull2 (VAR N: Word);
+  VAR 
+    J : Word;
+  BEGIN
+    J := 0;
+    FOR I := EZTVPageCount DOWNTO 1 DO 
+	  IF NOT (EZTVDay[I] IN ['0', '1', '2', '3', '4', '5', '6']) THEN
+	    BEGIN
+		  Inc (J);
+		  TK[J] := EZTVPage[I];
+		  IF TK[J] = '' THEN 
+		    Dec (J);
+		END;
+	N := J;	
+  END;
+  PROCEDURE _Gen(CC: String);
+  VAR 
+    J: Word;
+  BEGIN
+    IF K > 0 THEN
+      BEGIN
+        Write (T, '<A ONCLICK="');
+        FOR J := 1 TO (K - 1) DO 
+          Write (T, 'window.open (''', TK[J], '''); ');
+        Write (T, '" HREF="', TK[K], '" TARGET="_BLANK">', CC, '(',K,')</A>');
+      END
+    ELSE
+      Write (T, CC, '(0)'); 
+  END;
+  
+BEGIN  
+  K := 0;
+  
+  Write (T, '<TABLE WIDTH=100% BORDER=0><TR><TH>EZTV Quick Checks</TH></TR><TR><TD><CENTER>');
+  Write (T, '<A ONCLICK="');
+  FOR J := 1 TO (EZTVPageCount - 1) DO 
+    IF EZTVPage[J] <> '' THEN
+	  Write (T, 'window.open (''', EZTVPage[J], '''); ');
+  Write (T, '" HREF="', EZTVPage[EZTVPageCount], '" TARGET="_BLANK">All(',EZTVPageCount,')</A>,&nbsp;');
 
+  _Pull('0', K);
+  _Gen('Sun');
+  Write (T, ',&nbsp;');
+  _Pull('1', K);
+  _Gen('Mon');
+  Write (T, ',&nbsp;');
+  _Pull('2', K);
+  _Gen('Tue');
+  Write (T, ',&nbsp;');
+  _Pull('3', K);
+  _Gen('Wed');
+  Write (T, ',&nbsp;');
+  _Pull('4', K);
+  _Gen('Thu');
+  Write (T, ',&nbsp;');
+  _Pull('5', K);
+  _Gen('Fri');
+  Write (T, ',&nbsp;');
+  _Pull('6', K);
+  _Gen('Sat');
+  Write (T, ',&nbsp;and&nbsp;');
+
+  _Pull2(K);
+  _Gen('Others');
+  Write (T, '.');
+  Write (T, '</CENTER></TD></TR></TABLE>');
+  
+  Write (T, '<P><TT><CENTER>Homepages for&nbsp;');
+  
   Write (T, '<A HREF="', URL[ 1], '" TARGET="_BLANK">EZTV</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 2], '" TARGET="_BLANK">The Pirate Bay</A>,&nbsp;');
-{  
-  Write (T, '<A HREF="', URL[10], '" TARGET="_BLANK">MKVTV</A>,&nbsp;');
-}
   Write (T, '<A HREF="', URL[ 9], '" TARGET="_BLANK">Lime Torrent</A>,&nbsp;');
   Write (T, '<A HREF="', URL[16], '" TARGET="_BLANK">Torrent Galaxy</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 8], '" TARGET="_BLANK">Extra Torrent</A>,&nbsp;');
   Write (T, '<A HREF="', URL[12], '" TARGET="_BLANK">Torrentz2</A>,&nbsp;');
   Write (T, '<A HREF="', URL[13], '" TARGET="_BLANK">1337x</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 3], '" TARGET="_BLANK">TV</A>,&nbsp;');
-{
-  Write (T, '<BR>', RepeatStr ('&nbsp;', 13));
-}
   Write (T, '<A HREF="', URL[ 4], '" TARGET="_BLANK">Variety</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 5], '" TARGET="_BLANK">TV Line</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 7], '" TARGET="_BLANK">TV Series Finale</A>,&nbsp;');
-  Write (T, '<A HREF="', URL[11], '" TARGET="_BLANK">Openload</A>,&nbsp;');
   Write (T, '<A HREF="', URL[15], '" TARGET="_BLANK">Return Dates</A>,&nbsp;');
   
   Write (T, 'and&nbsp;');
   
   Write (T, '<A HREF="', URL[ 6], '" TARGET="_BLANK">Yes Movies</A>');
 
-  WriteLn (T, '</TT>');
+  WriteLn (T, '</CENTER></TT>');
 END;
 
 PROCEDURE Write_Footer;
@@ -409,11 +512,16 @@ BEGIN
   Write_Bookmarks;
   xEnd := getTickCount64;
   xDiff := (xEnd - xStart) / 1000;
-  Write (T, '<P><I><BR><FONT SIZE=-1>', LL1, OSVersion, LL2, xDiff:3:2, LL3);
+  Write (T, '<P/><HR><I><FONT SIZE=-1>', LL1, OSVersion, LL2, xDiff:3:2, LL3);
   Write (T, '<BR/>$Program compiled at ' + CTime + ' (local time) on ' + CDate + '<BR>');
   Write (T, '$Get the source code from <A HREF="', URL_TVList_Source, '" TARGET="_BLANK">github.com</A><BR>');
   Write (T, '$BitCoin Donate&nbsp;<A HREF="bitcoin:', MyBitCoin, '">', MyBitCoin, '</A></I>');
   WriteLn (T, '</FONT></FONT>');
+
+{$IFDEF EASTEREGG}
+  WriteLn (T, '<P/ ALIGN="RIGHT"><A HREF="https://www.cultdeadcow.com/" TARGET=_BLANK>&pi;</A>');  
+{$ENDIF}
+  
   WriteLn (T, '</BODY></HTML>');
 END;
 
@@ -507,6 +615,12 @@ END;
 
 
 PROCEDURE ProcessData;
+  PROCEDURE _Showday(SS: String; C: Char);
+  BEGIN
+    Inc (EZTVPageCount);
+    ShowDay := SS;
+	EZTVDay[EZTVPageCount] := C;
+  END;
 BEGIN
   WHILE NOT Eof (S) DO
     BEGIN
@@ -514,19 +628,19 @@ BEGIN
         ReadLn (S, W);
 		ExtractComments;
       UNTIL (W[1] <> '#') OR Eof(S);
-      ShowDay := '<B>&#91;UNKWN&#93;</B>';
+      ShowDay := '<B><FONT COLOR=' + StatusUnknown + '>&#91;UNKWN&#93;</FONT></B>';
       IF W[2] = '|' THEN
         BEGIN
           CASE UpCase(W[1]) OF
-            '0' : ShowDay := '<B>S------</B>';
-            '1' : ShowDay := '<B>-M-----</B>';
-            '2' : ShowDay := '<B>--T----</B>';
-            '3' : ShowDay := '<B>---W---</B>';
-            '4' : ShowDay := '<B>----T--</B>';
-            '5' : ShowDay := '<B>-----F-</B>';
-            '6' : ShowDay := '<B>------S</B>';
-            'Y' : ShowDay := '<B>&#91;BREAK&#93;</B>';
-            'Z' : ShowDay := '<B>&#91;ENDED&#93;</B>';
+            '0' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>S------</FONT></B>', '0');
+            '1' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>-M-----</FONT></B>', '1');
+            '2' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>--T----</FONT></B>', '2');
+            '3' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>---W---</FONT></B>', '3');
+            '4' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>----T--</FONT></B>', '4');
+            '5' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>-----F-</FONT></B>', '5');
+            '6' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>------S</FONT></B>', '6');
+            'Y' : _ShowDay('<B><FONT COLOR=' + StatusBreak + '>&#91;BREAK&#93;</FONT></B>', 'Y');
+            'Z' : _ShowDay('<B><FONT COLOR=' + StatusEnded + '>&#91;ENDED&#93;</FONT></B>', 'Z');
           END;
           Delete (W, 1, 2);
         END;
@@ -563,7 +677,13 @@ BEGIN
         
 		  Write (T, TDStr);
 		  IF XL <> '0//' THEN
-            Write (T, '<A HREF="', LinkURL[ 1], '/shows/', XL, '" TARGET="_BLANK">Info</A>,&nbsp;');
+		    BEGIN
+              Write (T, '<A HREF="', LinkURL[ 1], '/shows/', XL, '" TARGET="_BLANK">Info</A>,&nbsp;');
+			  IF EZTVPageCount < EZTVPageMax THEN
+                BEGIN
+	              EZTVPage[EZTVPageCount] := LinkURL[1] + '/shows/' + XL;
+	            END;
+			END;  
 		  Write (T, '<A HREF="', LinkURL[ 2], RepSpaceStr('-', XN), '" TARGET="_BLANK">Search</A></TD>');
 
 		  Write (T,  TDStr + '<A HREF="', LinkURL[15], RepSpaceStr('+', XN), '+%2BTV+%2BShow" TARGET="_BLANK">Google</A>');
@@ -581,10 +701,8 @@ BEGIN
           Write (T, TDStr + '<A HREF="', LinkURL[ 5], XN, '" TARGET="_BLANK">Variety</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[ 6], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVLine</A></TD>');
 		
-          Write (T, TDStr + '<A HREF="', LinkURL[ 7], RepSpaceStr('+', XN), '.html" TARGET="_BLANK">YesMovies</A>,&nbsp;');
-          Write (T, '<A HREF="', LinkURL[12], RepSpaceStr('+', XN), '" TARGET="_BLANK">Openload</A></TD>');
-
-          WriteLn (T, '</TR>');
+          Write (T, TDStr + '<A HREF="', LinkURL[ 7], RepSpaceStr('+', XN), '.html" TARGET="_BLANK">YesMovies</A>&nbsp;');
+          WriteLn (T, '</TD></TR>');
           Write ('.');
           Inc (LineCount);
         END
@@ -601,31 +719,11 @@ BEGIN
   Close (T);
 END;
 
-PROCEDURE CheckForProgIcon;
-VAR 
-  F : File;
-BEGIN
-  Write ('Checking for file ', TVListPNGName, '... ');
-  IF NOT FileExists (TVListPNGName) THEN
-    BEGIN
-	  Write ('Creatings... ');
-	  Assign (F, TVListPNGName);
-	  ReWrite (F, 1);
-	  BlockWrite (F, TVListPNG, TVListPNGSize);
-	  Close (F);
-	  WriteLn ('Done!');
-	END
-  ELSE 
-    WriteLn ('Found, skipped!');
-  WriteLn;	
-END;
-
 BEGIN
   GetDateTime;
   VARInit;
   Prog_Message;
   ProcessFilesOpen;
-  CheckForProgIcon;
   IF DisplayHighlight THEN
     WriteLn (T, '<TBODY>');
   ProcessData;

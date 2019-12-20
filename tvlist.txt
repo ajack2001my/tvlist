@@ -17,59 +17,65 @@
 #
 #     
 
-Y|A Discovery of Witches,3037/a-discovery-of-witches/
-3|A Million Little Things,3260/a-million-little-things/
 Y|Altered Carbon,2648/altered-carbon/
 #4|Arrow,679/arrow/
-2|Black Lightning,2621/black-lightning/
-Y|Burden of Truth,2757/burden-of-truth/@Returning 9-Jan-2019
-0|Charmed,3434/charmed/
-Y|Cloak and Dagger,2928/cloak-and-dagger/@Returning Spring 2019 (20-Mar-2019..21-Jun-2019)
-1|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
-3|Deadly Class,0//@Starting 16-Jan-2019
+0|Batwoman,18492/batwoman/
+Y|Black Lightning,2621/black-lightning/@Returning Monday, 20-Jan-2020
+#3|Burden of Truth,2757/burden-of-truth/
+Y|Charmed,3434/charmed/
+Y|Chilling Adventures of Sabrina,3534/chilling-adventures-of-sabrina/@Returning Friday, 24-Jan-2020
+Z|Cloak and Dagger,2928/cloak-and-dagger/
+Y|DCs Legends of Tomorrow,1568/legends-of-tomorrow/@Returning Tuesday, 14-Jan-2020
+Y|Daybreak,21778/daybreak/
 Y|Disenchantment,2979/disenchantment/
-0|Doctor Who,82/doctor-who-2005/
-#Y|Elementary,715/elementary/
+#Y|Doctor Who,82/doctor-who-2005/
+#Y|Doom Patrol,4466/doom-patrol/
+Y|Drag SOS,8250/drag-sos/
 2|FBI,3235/fbi/
+5|Harley Quinn,29596/harley-quinn/
 Y|Harrow,2730/harrow/
-Y|I am Frankie,2239/i-am-frankie/
+0|His Dark Materials,23839/his-dark-materials/
 Y|Impulse,2925/impulse/
-Y|Instinct,2825/instinct/@Returning Spring 2019 (20-Mar-2019..21-Jun-2019)
-Y|Killjoys,1281/killjoys/@Returning September 2019
-Y|Krypton,2724/krypton/
-#2|Legion,2003/legion/
-Y|Lucifer,1582/lucifer/
+Z|Killjoys,1281/killjoys/
+4|Legacies,3530/legacies/
+Y|Lucifer,1582/lucifer/@Returning Saturday, 6-Jun-2020
 Y|Lucky Man,1584/stan-lees-lucky-man/
-1|Manifest,3228/manifest/
+Y|Manifest,3228/manifest/@Returning Monday, 6-Jan-2020
 Y|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
-5|Marvels Runaways,0//@Returning 21-Dec-2018
-#Y|Marvels The Punisher,2536/the-punisher/
+Z|Marvels Runaways,2543/runaways/
 Y|Mindhunter,2489/mindhunter/
-0|Nightflyers,0//@Premiering 2-Dec-2018
+Y|Miracle Workers,4423/miracle-workers/@Returning Tuesday, 28-Jan-2020
+3|Nancy Drew,19005/nancy-drew/
+NeXt,0//@Starting Q2-2020
 Y|Our Cartoon President,2668/our-cartoon-president/
 7|Raised by Wolves,0//
-Y|Reverie,2917/reverie/
-#Y|Sense8,2015/sense8/
-Y|Shadowhunters,1563/shadowhunters-the-mortal-instruments/@Returning Spring 2019 (20-Mar-2019..21-Jun-2019), possibly 30-Mar-2019
-0|Shameless,440/shameless-us/
-Y|Siren,2769/siren/@Returning 24-Jan-2019
-Y|Star Trek Discovery,2249/star-trek-discovery/@Returning 17-Jan-2019
-0|Supergirl,1222/supergirl/
-#Y|Superstition,0//
-0|The Bureau of Magical Things,3371/the-bureau-of-magical-things/
-4|The Big Bang Theory,23/the-big-bang-theory/
+Z|Reef Break,7443/reef-break/
+Resident Alien,0//
+#0|Shameless,440/shameless-us/
+Y|Siren,2769/siren/
+Snowpiercer,0//@Starting Spring-2020
+Y|Stranger Things,1861/stranger-things/
+7|Star Trek Picard,0//@Starting Friday, 24-Jan-2020
+Y|Star Trek Discovery,2249/star-trek-discovery/
+#0|Supergirl,1222/supergirl/
+Z|The Big Bang Theory,23/the-big-bang-theory/
+Y|The Dark Crystal Age of Resistance,13344/the-dark-crystal-age-of-resistance/
+7|The Dresden Files,0//
 Y|The Expanse,1342/the-expanse/
-#2|The Flash,1058/the-flash-2014/
-2|The Gifted,2162/the-gifted/
-1|The Good Doctor,2160/the-good-doctor/
-Y|The L Word,148/the-l-word/
-3|The Magicians,1527/the-magicians/@Returning 23-Jan-2019
-0|The Orville,2151/the-orville/@Returning 30-Dec-2018
+Z|The Inbetween,6384/the-inbetween/
+0|The L Word Generation Q,29436/the-l-word-generation-q/
+Y|The Magicians,1527/the-magicians/@Returning Wednesday, 15-Jan-2020
+5|The Mandalorian,25836/the-mandalorian/
+Y|The Mountain,22563/the-mountain/
+Y|The Orville,2151/the-orville/@Returning Late-2020
 Y|The Outpost,2954/the-outpost/
-2|The Rookie,3456/the-rookie/
-0|The Simpsons,249/the-simpsons/
-#Y|The X-Files,1579/the-x-files/
-5|Titans,0//
-Y|Westworld,1913/westworld/
-#7|Will and Grace,0//
+Y|The Rook,8042/the-rook/
+#0|The Simpsons,249/the-simpsons/
+Y|The Umbrella Academy,4455/the-umbrella-academy/
+5|The Witcher,0//@Starting Friday, 20-Dec-2019
+Y|Titans,3540/titans/
+Y|Warrior 2019,0//
+0|Watchmen,21048/watchmen/
+Y|Westworld,1913/westworld/@Returning in 2020
+Y|Why Women Kill,11599/why-women-kill/
 4|Young Sheldon,2250/young-sheldon/
