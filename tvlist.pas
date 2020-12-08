@@ -2,8 +2,8 @@
 
 TVList $ProgVer$
 
-An HTML generator for keeping track of your favorite shows from EZTV or create a TV series search if EZTV does not have a dedicated 
-show page as well as a quick search of various torrent search engines if episode is missing and check show status on TV.com. 
+An HTML generator for keeping track of your favorite shows from EZTV or create a TV series search if EZTV does not have a dedicated
+show page as well as a quick search of various torrent search engines if episode is missing and check show status on various TV sites.
 
 Developed by Adrian Chiang in 2015, last updated on $ProgDate$.
 
@@ -16,12 +16,17 @@ your computer.  Oh! It would be nice if you gave me credit if you use this sourc
 code (in whole or in part).
 ===================================================================================
 
-CSS Highlight code adapted from 
+CSS Highlight code adapted from
 
   URL http://www.java2s.com/Tutorials/HTML_CSS/Table/Style/Highlight_both_column_and_row_on_hover_in_CSS_only_in_HTML_and_CSS.htm
 
 *}
-{$DEFINE NO_EASTEREGG}
+
+{$R tvlist.rc}
+
+{$DEFINE EASTEREGG1}
+{$DEFINE EASTEREGG2}
+{$DEFINE DNSHELP8888}
 
 PROGRAM TVList;
 
@@ -35,22 +40,22 @@ USES
 
 CONST
   ProgName             = 'TVList';
-  ProgVer              = 'v0.9.3';
-  ProgDate             = '20191220';
+  ProgVer              = 'v0.9.5';
+  ProgDate             = '20201208';
   ProgAuthor           = 'Adrian Chiang';
   ProgDesc             = 'An EZTV Series Manager';
-  
+
   MyBitCoin            = '1FSMJRMk65o25frAsBoMYoZEZMkqncQ4Jm';
-    
+
   CTime                = {$I %TIME%};
   CDate                = {$I %DATE%};
 
   EZTVPageMax          = 512;
-  
+
   LL1 = '$' + ProgName + '(';
   LL2 = ') took ';
   LL3 = ' second(s) to generate HTML...';
-  
+
   Desc_Show       = 'Name of the show';
   Desc_EZTV       = 'Go to EZTV''s show info page or search the EZTV database for similar name episodes.';
   Desc_Search     = 'Search torrent engines for show if not found in EZTV.';
@@ -59,11 +64,13 @@ CONST
   Desc_Online     = 'Watch show online instead of downloading/torrenting.';
   Desc_Airs       = 'Day show airs, between seasons, mid-season break, ended or unknown.';
   Desc_General    = 'Search in Google for your TV dramas.';
+  Desc_DNS8888    = 'Click to learn how to change the DNS address to your own choosing.';
 
 
   URL_TVList_Source  = 'https://www.github.com/ajack2001my/tvlist';
-  
- 
+  URL_HOWTO_DNS      = 'https://www.howtogeek.com/167533/the-ultimate-guide-to-changing-your-dns-server/';
+
+
   TDStr = '<TD ALIGN="CENTER">';
 
   TVListString  = 'tvlist';
@@ -77,12 +84,12 @@ CONST
   TVListPNGB64_2 = 'UH4QoZCikZW9fQzgAAAKRJREFUOMutktENwyAMRO88awZBjJERkgW63fWjMXKKQ4haJIsEfKdnYwLCs0UBov/ZL+KBATUjHhiIZ5NcDAAc';
   TVListPNGB64_3 = '98BNcnEw4NNONlJz8bZhlYSrWBa8MkLiqEG6hyD7SiyKSbaIAt89z6m6V4gJs2s4SJJAsjPcd66N7pMnZCRZzdGQ5JnABWaGWmvXk5gXz3';
   TVListPNGB64_4 = 'RQyL89SintLrv3CdM3+uwT/mUS3xRgd123Bf8bAAAAAElFTkSuQmCC';
-  
-  MonthName : Array [1..12] of String = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+
+  MonthName : Array [1..12] of String = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-  DayName   : Array [0..6]  of String = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 
+  DayName   : Array [0..6]  of String = ('Sunday', 'Monday', 'Tuesday', 'Wednesday',
                                          'Thursday', 'Friday', 'Saturday');
-  
+
 VAR
   S,
   T                 : Text;
@@ -120,17 +127,17 @@ VAR
   xMo,
   xDa,
   xuDa              : Word;
-  xStart, 
+  xStart,
   xEnd              : QWord;
   xDiff             : Real;
   LinkURL,
   URL               : Array[1..TVListLnkSize] of String;
-  DisplayHighlight  : Boolean;
+  DisplayHighlight  : Boolean = True;
   TK,
   EZTVPage          : Array [1..EZTVPageMax] of String;
   EZTVDay           : Array [1..EZTVPageMax] of Char;
   EZTVPageCount     : Word;
-  
+
 PROCEDURE VARInit;
 VAR
   C : Text;
@@ -146,42 +153,40 @@ VAR
 	    N := '';
 		EXIT;
 	  END;
-	WHILE (P[1] = ' ') AND (Length(P) > 1) DO 
+	WHILE (P[1] = ' ') AND (Length(P) > 1) DO
 	  Delete (P, 1, 1);
     Delete (P, 1, Length(S) + 1);
 	I := Pos(' ', P);
 	IF I > 1 THEN
 	  Delete (P, I, (Length(P) - I) + 1);
-    N := P;	
+    N := P;
   END;
 BEGIN
 
   EZTVPageCount := 0;
-  
-  URL[ 1] := 'https://eztv.io';                            {URL_EZTV}
-  URL[ 2] := 'https://thepiratebay.org';                   {URL_ThePirateBay}
+
+  URL[ 1] := 'https://eztv.re';                            {URL_EZTV}
+  URL[ 2] := 'https://lepiratebay.org';                    {URL_ThePirateBay}
   URL[ 3] := 'http://www.tv.com';
   URL[ 4] := 'http://variety.com';
   URL[ 5] := 'http://tvline.com';
-  URL[ 6] := 'https://yesmovies.to';                       {URL_YesMovies}
+  URL[ 6] := 'https://yesmovies.ag';                       {URL_YesMovies}
   URL[ 7] := 'https://tvseriesfinale.com';
-  URL[ 8] := 'https://extratorrent.ag';                    {URL_ExtraTorrent}
-  URL[ 9] := 'https://limetorrents.info';                  {URL_LimeTorrent}
-
-  URL[10] := '';
+  URL[ 8] := 'https://extratorrents.it';                   {URL_ExtraTorrent}
+  URL[ 9] := 'https://limetorrents.cc';                    {URL_LimeTorrent}
+  URL[10] := 'https://next-episode.net';                   {URL_NextEpisode}          
   URL[11] := '';
-
-  URL[12] := 'https://torrentz2.eu';                       {URL_TorrentZ2}
+  URL[12] := 'https://torrentzeu.org';                     {URL_TorrentZ2}
   URL[13] := 'http://1337x.to';                            {URL_1337x}
   URL[14] := 'https://www.google.com';                     {URL_Google}
-  URL[15] := 'https://www.returndates.com';
+  URL[15] := 'http://www.returndates.com';
   URL[16] := 'https://torrentgalaxy.to';                   {URL_TorGalaxy}
 
-  HTML_FontName      := 'Calibri';  
+  HTML_FontName      := 'Calibri';
   Header_Color       := '"#FFFFFF"';
   Header_BGColor     := '"#000000"';
   CSS_Link_Color     := '#000';
-  CSS_VLink_Color    := '#666';
+  CSS_VLink_Color    := '#777';
   Line1_BGColor      := '"#FFFFFF"';
   Line2_BGColor      := '"#D0D0D0"';
   ComText_Color      := '"#FF0000"';
@@ -198,7 +203,7 @@ BEGIN
     BEGIN
 	  Assign (C, TVList_Config);
 	  Reset (C);
-	    WHILE NOT Eof(C) DO 
+	    WHILE NOT Eof(C) DO
 		  BEGIN
 		    ReadLn (C, X);
 			IF (X[1] <> '#') THEN
@@ -208,10 +213,10 @@ BEGIN
  	    		    _UpdateVAR (__DisplayHighlight, 'Highlight', X);
 					IF UpCase(__DisplayHighlight[1]) = 'Y' THEN
 					  DisplayHighlight := True
-					ELSE  
+					ELSE
 					  DisplayHighlight := False;
 				  END;
-				  
+
     			IF Pos ('HTML_RefreshRate=', X) > 0 THEN
 	    		  _UpdateVAR (HTML_RefreshRate, 'HTML_RefreshRate', X);
     			IF Pos ('URL_YesMovies=', X) > 0 THEN
@@ -234,10 +239,10 @@ BEGIN
 	    		  _UpdateVAR (URL[12], 'URL_TorrentZ2', X);
     			IF Pos ('URL_1337x=', X) > 0 THEN
 	    		  _UpdateVAR (URL[13], 'URL_1337x', X);
-				  
+
         		IF Pos ('HTML_FontName=', X) > 0 THEN
 	    		  _UpdateVAR (HTML_FontName, 'HTML_FontName', X);
-				  
+
 		    	IF Pos ('Header_Color=', X) > 0 THEN
 			      _UpdateVAR (Header_Color, 'Header_Color', X);
     			IF Pos ('Header_BGColor=', X) > 0 THEN
@@ -249,7 +254,7 @@ BEGIN
 
 				IF Pos ('Highlight_BGColor=', X) > 0 THEN
 	    		  _UpdateVAR (Highlight_BGColor, 'Highlight_BGColor', X);
-	  
+
 		    	IF Pos ('Line1_BGColor=', X) > 0 THEN
 			      _UpdateVAR (Line1_BGColor, 'Line1_BGColor', X);
     			IF Pos ('Line2_BGColor=', X) > 0 THEN
@@ -267,24 +272,25 @@ BEGIN
 			      _UpdateVAR (StatusEnded, 'Status_Ended', X);
 			  END;
 		  END;
-		Close (C);  
+		Close (C);
 	END;
-  LinkURL[ 1] := URL[ 1];
+
+  LinkURL[ 1] := URL[ 1];  
   LinkURL[ 2] := URL[ 1] + '/search/';
-  LinkURL[ 3] := URL[ 2] + '/search/';
+  LinkURL[ 3] := URL[ 2] + '/search.php?cat=0&q=';
   LinkURL[ 4] := URL[ 3] + '/search?q=';
   LinkURL[ 5] := URL[ 4] + '/results/#?q=';
-  LinkURL[ 6] := URL[ 5] + '/tag/'; 
+  LinkURL[ 6] := URL[ 5] + '/tag/';
   LinkURL[ 7] := URL[ 6] + '/searching/';
   LinkURL[ 8] := URL[ 7] + '/tv-show/';
   LinkURL[ 9] := URL[ 8] + '/search/?search=';
   LinkURL[10] := URL[ 9] + '/search/all/';
-  LinkURL[11] := URL[10] + '/?s=';
+  LinkURL[11] := URL[10] + '/search/?name=';
   LinkURL[12] := URL[11] + '/?s=';
   LinkURL[13] := URL[12] + '/verified?f=';
   LinkURL[14] := URL[13] + '/search/';
-  LinkURL[15] := URL[14] + '/search?&q=';	
-  LinkURL[16] := URL[16] + '/torrents.php?search=';	  
+  LinkURL[15] := URL[14] + '/search?&q=';
+  LinkURL[16] := URL[16] + '/torrents.php?search=';
 END;
 
 PROCEDURE RuntimeError (Msg: String);
@@ -292,11 +298,11 @@ BEGIN
   WriteLn (Msg);
   Halt;
 END;
-  
+
 FUNCTION OSVersion: String;
 BEGIN
   OSVersion := 'Other';
-  
+
 {$IFDEF UNIX}
   OSVersion := 'Unix';
   {$IFDEF Linux}
@@ -308,17 +314,17 @@ BEGIN
   OSVersion := 'Windows';
   {$IFDEF WIN32}
      OSVersion := 'Win32';
-  {$ENDIF}	 
+  {$ENDIF}
   {$IFDEF WIN64}
      OSVersion := 'Win64';
-  {$ENDIF}	 
+  {$ENDIF}
 {$ENDIF}
-END;  
-  
+END;
+
 PROCEDURE Write_HTML_Headers;
 BEGIN
-  WriteLn (T, '<!DOCTYPE HTML>'); 
-  Write (T, '<HTML><HEAD><META CHARSET="UTF-8"><META HTTP-EQUIV="REFRESH" CONTENT="', HTML_RefreshRate, '"><TITLE>', ProgName, ' ', ProgVer, 
+  WriteLn (T, '<!DOCTYPE HTML>');
+  Write (T, '<HTML><HEAD><META CHARSET="UTF-8"><META HTTP-EQUIV="REFRESH" CONTENT="', HTML_RefreshRate, '"><TITLE>', ProgName, ' ', ProgVer,
             '</TITLE><LINK REL="icon" TYPE="image/png" HREF="data:image/x-icon;base64,', TVListPNGB64_1, TVListPNGB64_2, TVListPNGB64_3, TVListPNGB64_4);
   WriteLn (T, '" REL="icon" TYPE="image/x-icon" />');
 
@@ -360,8 +366,10 @@ BEGIN
 	  WriteLn (T, '</style>');
 	  WriteLn (T);
 	END;
-	
-  Write   (T, '</HEAD><BODY>');
+
+  Write   (T, '</HEAD>');
+  Write   (T, '<STYLE>A {text-decoration: none;} </STYLE>');
+  Write   (T, '<BODY>');
 END;
 
 PROCEDURE Write_Headers;
@@ -369,12 +377,26 @@ BEGIN
   WriteLn (T, '<FONT FACE="', HTML_FontName, '">');
   WriteLn (T, '<FONT SIZE=+1>', L1, '<BR>');
   WriteLn (T, '&copy;' + L2 + '<P></FONT>');
+{ 
   WriteLn (T, '<FONT SIZE=-1><I>' + L3 + '</I><BR>');
+}
+
+Write   (T, '<P STYLE="text-align:left;">');
+Write   (T, '<FONT SIZE=-1><I>', L3, '</I>');
+Write   (T, '<SPAN STYLE="float:right;">');
+
+{$IFDEF DNSHELP8888}
+Write   (T, '<A HREF="', URL_HOWTO_DNS, '" TARGET=_BLANK TITLE="', Desc_DNS8888, '">');
+Write   (T, '<B>Website blocked? Use DNS 8.8.8.8 or 8.8.4.4</B></A>');
+{$ENDIF}
+
+WriteLn (T, '</SPAN></P></FONT>');
+
   IF DisplayHighlight THEN
     Write   (T, '<TABLE class="myTable myTable-highlight-all" WIDTH="100%" BORDER=1><THEAD><TR BGCOLOR=', Header_BGColor, '>')
   ELSE
     Write   (T, '<TABLE WIDTH="100%" BORDER=1><TR BGCOLOR=', Header_BGColor, '>');
-	
+
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_Show, '"><FONT COLOR=', Header_Color, '>Show</FONT></DIV></TH>');
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_Airs, '"><FONT COLOR=', Header_Color, '>Airs</FONT></DIV></TH>');
   Write   (T, '<TH ALIGN="CENTER"><DIV TITLE="', Desc_EZTV, '"><FONT COLOR=', Header_Color, '>EZTV</FONT></DIV></TH>');
@@ -390,7 +412,7 @@ END;
 
 PROCEDURE Write_Bookmarks;
 VAR
-  J, 
+  J,
   K : Word;
   FUNCTION RepeatStr (S: String; N: Word):String;
   VAR
@@ -400,59 +422,59 @@ VAR
     X := '';
 	FOR I := 1 TO N DO
 	  X := X + S;
-	RepeatStr := X;  
+	RepeatStr := X;
   END;
   PROCEDURE _Pull (C: Char; VAR N: Word);
-  VAR 
+  VAR
     J : Word;
   BEGIN
     J := 0;
-    FOR I := EZTVPageCount DOWNTO 1 DO 
+    FOR I := EZTVPageCount DOWNTO 1 DO
 	  IF EZTVDay[I] = C THEN
 	    BEGIN
 		  Inc (J);
 		  TK[J] := EZTVPage[I];
-		  IF TK[J] = '' THEN 
+		  IF TK[J] = '' THEN
 		    Dec (J);
 		END;
-	N := J;	
+	N := J;
   END;
   PROCEDURE _Pull2 (VAR N: Word);
-  VAR 
+  VAR
     J : Word;
   BEGIN
     J := 0;
-    FOR I := EZTVPageCount DOWNTO 1 DO 
+    FOR I := EZTVPageCount DOWNTO 1 DO
 	  IF NOT (EZTVDay[I] IN ['0', '1', '2', '3', '4', '5', '6']) THEN
 	    BEGIN
 		  Inc (J);
 		  TK[J] := EZTVPage[I];
-		  IF TK[J] = '' THEN 
+		  IF TK[J] = '' THEN
 		    Dec (J);
 		END;
-	N := J;	
+	N := J;
   END;
   PROCEDURE _Gen(CC: String);
-  VAR 
+  VAR
     J: Word;
   BEGIN
     IF K > 0 THEN
       BEGIN
         Write (T, '<A ONCLICK="');
-        FOR J := 1 TO (K - 1) DO 
+        FOR J := 1 TO (K - 1) DO
           Write (T, 'window.open (''', TK[J], '''); ');
         Write (T, '" HREF="', TK[K], '" TARGET="_BLANK">', CC, '(',K,')</A>');
       END
     ELSE
-      Write (T, CC, '(0)'); 
+      Write (T, CC, '(0)');
   END;
-  
-BEGIN  
+
+BEGIN
   K := 0;
-  
+
   Write (T, '<TABLE WIDTH=100% BORDER=0><TR><TH>EZTV Quick Checks</TH></TR><TR><TD><CENTER>');
   Write (T, '<A ONCLICK="');
-  FOR J := 1 TO (EZTVPageCount - 1) DO 
+  FOR J := 1 TO (EZTVPageCount - 1) DO
     IF EZTVPage[J] <> '' THEN
 	  Write (T, 'window.open (''', EZTVPage[J], '''); ');
   Write (T, '" HREF="', EZTVPage[EZTVPageCount], '" TARGET="_BLANK">All(',EZTVPageCount,')</A>,&nbsp;');
@@ -483,33 +505,102 @@ BEGIN
   _Gen('Others');
   Write (T, '.');
   Write (T, '</CENTER></TD></TR></TABLE>');
-  
+
   Write (T, '<P><TT><CENTER>Homepages for&nbsp;');
-  
+
   Write (T, '<A HREF="', URL[ 1], '" TARGET="_BLANK">EZTV</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 2], '" TARGET="_BLANK">The Pirate Bay</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 9], '" TARGET="_BLANK">Lime Torrent</A>,&nbsp;');
   Write (T, '<A HREF="', URL[16], '" TARGET="_BLANK">Torrent Galaxy</A>,&nbsp;');
-  Write (T, '<A HREF="', URL[ 8], '" TARGET="_BLANK">Extra Torrent</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[ 8], '/home " TARGET="_BLANK">Extra Torrent</A>,&nbsp;');
   Write (T, '<A HREF="', URL[12], '" TARGET="_BLANK">Torrentz2</A>,&nbsp;');
   Write (T, '<A HREF="', URL[13], '" TARGET="_BLANK">1337x</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 3], '" TARGET="_BLANK">TV</A>,&nbsp;');
+  Write (T, '<A HREF="', URL[10], '" TARGET="_BLANK">Next Episode</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 4], '" TARGET="_BLANK">Variety</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 5], '" TARGET="_BLANK">TV Line</A>,&nbsp;');
   Write (T, '<A HREF="', URL[ 7], '" TARGET="_BLANK">TV Series Finale</A>,&nbsp;');
   Write (T, '<A HREF="', URL[15], '" TARGET="_BLANK">Return Dates</A>,&nbsp;');
-  
+
   Write (T, 'and&nbsp;');
-  
+
   Write (T, '<A HREF="', URL[ 6], '" TARGET="_BLANK">Yes Movies</A>');
 
   WriteLn (T, '</CENTER></TT>');
 END;
 
 PROCEDURE Write_Footer;
+{$IFDEF EASTEREGG1}
+CONST
+  SQMax = 43;
+VAR
+  SQ : String;
+  R  : Real;
+  I  : Word;
+  SQS : Array [0..SQMax] of String;
+{$ENDIF}
+  
 BEGIN
   WriteLn (T, '</TABLE><P>');
   Write_Bookmarks;
+
+{$IFDEF EASTEREGG1}
+  SQS[ 0] := 'If you can read this, you don''t need glasses.'; 
+  SQS[ 1] := 'If you notice this notice, you will notice that this notice is not worth noticing.';
+  SQS[ 2] := 'Sometimes when I close my eyes, I can''t see.';
+  SQS[ 3] := 'Dear Math, please grow up and solve your own problems, I''m tired of solving them for you.';
+  SQS[ 4] := 'An apple a day keeps anyone away, if you throw it hard enough.';
+  SQS[ 5] := 'I did not trip and fall. I attacked the floor and I believe I am winning.';
+  SQS[ 6] := 'There are no stupid questions, just stupid people.';
+  SQS[ 7] := 'Did you just fall? No, I was checking if gravity still works.';
+  SQS[ 8] := 'I''m glad I don''t have to hunt my own food, I don''t even know where sandwiches live.';
+  SQS[ 9] := 'No matter how smart you are you can never convince someone stupid that they are stupid.';
+  SQS[10] := 'I put my phone in airplane mode, but it''s not flying!';
+  SQS[11] := 'If you think nothing is impossible, try slamming a revolving door.';
+  SQS[12] := 'I''m trying to think how I can think of what I want to think.';
+  SQS[13] := 'I know that I am stupid but when I look around me I feel a lot better.';
+  SQS[14] := 'Doing nothing is hard, you never know when you''re done.';
+  SQS[15] := 'When life closes a door, just open it again. It''s a door, that''s how they work.';
+  SQS[16] := 'You''re born free, then you''re taxed to death.'; 
+  SQS[17] := 'It''s true that we don''t know what we''ve got until we lose it, but it''s also true that we don''t know what we''ve been missing until it arrives.';
+  SQS[18] := 'Are you free tomorrow? No, tomorrow I''m still expensive.';
+  SQS[19] := 'I think, therefore I am... I think!';
+  SQS[20] := 'Only Amiga makes it possible!';
+  SQS[21] := 'Apple // Forever!';
+  SQS[22] := 'People say you can''t live without love, but I think oxygen is more important.';
+  SQS[23] := 'What do I do for a living? I breathe in and out.';
+  SQS[24] := 'I love you forever... but I can''t live that long.';
+  SQS[25] := 'Retirement is when you stop living at work, and start working at living.';
+  SQS[26] := 'Living on earth may be tough, but it includes a free ride around the sun every year.';
+  SQS[27] := 'The best things in life are free. The rest are too expensive.';
+  SQS[28] := 'The best revenge is massive success.';
+  SQS[29] := 'My wife told me the other day that I don''t take her to expensive places any more, so I took her to the gas station.';
+  SQS[30] := 'The richer you get, the more expensive happiness becomes.';
+  SQS[31] := 'If you want your wife to listen to you, then talk to another woman; she will be all ears.';
+  SQS[32] := 'Marriage is like a walk in the park... Jurrasic Park.';
+  SQS[33] := 'I had an extremely busy day, converting oxygen into carbon dioxide.';
+  SQS[34] := 'Dear life, when I said "can this day get any worse" it was a rhetorical question, not a challenge.';
+  SQS[35] := 'My bed is a magical place where I suddenly remember everything I forgot to do.';
+  SQS[36] := 'We all have baggage, find someone who loves you enough to help you unpack.';
+  SQS[37] := 'Why must I prove that I am me when I pay bills over the phone? Did some else call to pay my bills, and if they did, why don''t you let them?';
+  SQS[38] := 'Never take life seriously. Nobody gets out alive anyway.';
+  SQS[39] := 'My mind not only wanders, sometimes it leaves completely!';
+  SQS[40] := 'What type of exercise do lazy people do? Diddly squats.';
+  SQS[41] := 'If every day is a gift, then today I got socks.';
+  SQS[42] := 'I remember years ago when all I wanted is to be older. I was wrong!';
+  SQS[43] := 'I''m on that new diet where you eat anything you want and you pray for a miracle.';  
+  
+  Randomize;
+  R := Random * SqMax;
+  I := Round (R);
+  
+  Write (T, '<P><CENTER><FONT SIZE=-2>');
+
+  SQ := SQS[I];
+  Write (T, SQ);  
+  Write (T, '</FONT></CENTER></P>');
+{$ENDIF}
+  
   xEnd := getTickCount64;
   xDiff := (xEnd - xStart) / 1000;
   Write (T, '<P/><HR><I><FONT SIZE=-1>', LL1, OSVersion, LL2, xDiff:3:2, LL3);
@@ -518,10 +609,10 @@ BEGIN
   Write (T, '$BitCoin Donate&nbsp;<A HREF="bitcoin:', MyBitCoin, '">', MyBitCoin, '</A></I>');
   WriteLn (T, '</FONT></FONT>');
 
-{$IFDEF EASTEREGG}
-  WriteLn (T, '<P/ ALIGN="RIGHT"><A HREF="https://www.cultdeadcow.com/" TARGET=_BLANK>&pi;</A>');  
+{$IFDEF EASTEREGG2}
+  WriteLn (T, '<P/ ALIGN="RIGHT"><A HREF="https://www.cultdeadcow.com/" TARGET=_BLANK>&pi;</A>');
 {$ENDIF}
-  
+
   WriteLn (T, '</BODY></HTML>');
 END;
 
@@ -549,9 +640,9 @@ BEGIN
     X := '+' + X
   ELSE
     X := '-' + X;
-	
+
   IF X[Length(X)] = '0' THEN
-    Delete (X, Length(X) - 1, 2);  
+    Delete (X, Length(X) - 1, 2);
   R2S := X;
 END;
 
@@ -560,7 +651,7 @@ BEGIN
   L1 := ProgName + ' ' + ProgVer + ' - ' + ProgDesc + ' - Created by ' + ProgAuthor + '. Build ' + ProgDate;
   L2 := ' Copyright ' + ProgAuthor + ', 2015-20' + ProgDate[3] + ProgDate[4] + '. All Rights Reserved. Distributed under an MIT license.';
   L3 := 'List generated on ' + DayName[xuDa] + ', ' + Num2Str(xDa) + '-' + MonthName[xMo] + '-' +
-        Num2Str(xYe) + ', ' + Num2Str(xHo) + ':' + Num2Str(xMi) + ':' + Num2Str(xSe) + ' UTC' + 
+        Num2Str(xYe) + ', ' + Num2Str(xHo) + ':' + Num2Str(xMi) + ':' + Num2Str(xSe) + ' UTC' +
 		R2S(GetLocalTimeOffset);
 
   WriteLn (L1);
@@ -605,7 +696,7 @@ VAR
   A : Word;
 BEGIN
   ComText := '';
-  A := Pos('@', W);  
+  A := Pos('@', W);
   IF A < 1 THEN
     EXIT;
   ComText := W;
@@ -656,25 +747,25 @@ BEGIN
 		    BEGIN
     		  IF (LineCount MOD 2) = 0 THEN
 	    	    Write (T, ' BGCOLOR=', Line1_BGColor)
-		      ELSE	
+		      ELSE
 		        Write (T, ' BGCOLOR=', Line2_BGColor);
 			END;
 
 		  Write (T, '><TD>');
-		  IF ComText <> '' THEN 
+		  IF ComText <> '' THEN
 		    Write (T, '<DIV TITLE="', ComText, '"><FONT COLOR=', ComText_Color, '>');
           Write (T, XN);
-		  IF ComText <> '' THEN 
+		  IF ComText <> '' THEN
 		    Write (T, '</FONT></DIV>');
 		  Write (T, '</TD>');
-		
+
           XL := '';
           FOR I := (V + 1) TO Length (W) DO
             XL := XL + W[I];
 
 
           Write (T, TDStr + '<TT>', ShowDay, '</TT></TD>');
-        
+
 		  Write (T, TDStr);
 		  IF XL <> '0//' THEN
 		    BEGIN
@@ -683,19 +774,20 @@ BEGIN
                 BEGIN
 	              EZTVPage[EZTVPageCount] := LinkURL[1] + '/shows/' + XL;
 	            END;
-			END;  
+			END;
 		  Write (T, '<A HREF="', LinkURL[ 2], RepSpaceStr('-', XN), '" TARGET="_BLANK">Search</A></TD>');
 
 		  Write (T,  TDStr + '<A HREF="', LinkURL[15], RepSpaceStr('+', XN), '+%2BTV+%2BShow" TARGET="_BLANK">Google</A>');
 
-          Write (T, TDStr + '<A HREF="', LinkURL[ 3], XN, '/" TARGET="_BLANK">PirateBay</A>,&nbsp;');
+          Write (T, TDStr + '<A HREF="', LinkURL[ 3], RepSpaceStr('+', XN), '" TARGET="_BLANK">PirateBay</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[10], XN, '/" TARGET="_BLANK">LimeTor</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[ 9], RepSpaceStr('+', XN), '" TARGET="_BLANK">ExtraTor</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[16], RepSpaceStr('+', XN), '" TARGET="_BLANK">TorGalaxy</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[13], RepSpaceStr('+', XN), '&safe=1" TARGET="_BLANK">Torz2</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '/1/" TARGET="_BLANK">1337x</A></TD>');
 		
-          Write (T, TDStr + '<A HREF="', LinkURL[ 4], XN, '" TARGET="_BLANK">TVcom</A>,&nbsp;');
+          Write (T, TDStr + '<A HREF="', LinkURL[11], RepSpaceStr('-', XN), '" TARGET="_BLANK">NextEpisode</A>,&nbsp;');
+          Write (T, '<A HREF="', LinkURL[ 4], XN, '" TARGET="_BLANK">TVcom</A>,&nbsp;');
           Write (T, '<A HREF="', LinkURL[ 8], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVfinale</A></TD>');
 		
           Write (T, TDStr + '<A HREF="', LinkURL[ 5], XN, '" TARGET="_BLANK">Variety</A>,&nbsp;');

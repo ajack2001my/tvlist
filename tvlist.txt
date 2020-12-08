@@ -4,7 +4,7 @@
 #
 #######################################################################################################
 #
-# "#" at column 1 denotes the line is a commentry and should be ignored.
+# "#" at column 1 denotes the line is a commentary line and should be ignored.
 #
 # Format is:
 #
@@ -16,66 +16,78 @@
 #     @            = Will add text as a mouse-over comment to series name. Should be at the end of line.
 #
 #     
-
-Y|Altered Carbon,2648/altered-carbon/
-#4|Arrow,679/arrow/
-0|Batwoman,18492/batwoman/
-Y|Black Lightning,2621/black-lightning/@Returning Monday, 20-Jan-2020
-#3|Burden of Truth,2757/burden-of-truth/
-Y|Charmed,3434/charmed/
-Y|Chilling Adventures of Sabrina,3534/chilling-adventures-of-sabrina/@Returning Friday, 24-Jan-2020
-Z|Cloak and Dagger,2928/cloak-and-dagger/
-Y|DCs Legends of Tomorrow,1568/legends-of-tomorrow/@Returning Tuesday, 14-Jan-2020
-Y|Daybreak,21778/daybreak/
+2|A Teacher,180176/a-teacher/
+#Z|Altered Carbon,2648/altered-carbon/
+#Y|Awkwafina is Nora from Queens,34200/awkwafina-is-nora-from-queens/
+Y|Batwoman,18492/batwoman/@Returning Monday, 8-Feb-2021
+Y|Biohackers,133614/biohackers/
+Y|Black Lightning,2621/black-lightning/@Returning Sunday, 17-Jan-2021
+Y|Bosch,1195/bosch/
+0|Call Me Kat,0//@Starting on Sunday, 3-Jan-2021
+Y|Chilling Adventures of Sabrina,3534/chilling-adventures-of-sabrina/@Returning Thursday, 31-Dec-2020
+Y|Coroner,4151/coroner/
+Y|Cursed,113710/cursed/
+Y|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
 Y|Disenchantment,2979/disenchantment/
-#Y|Doctor Who,82/doctor-who-2005/
-#Y|Doom Patrol,4466/doom-patrol/
-Y|Drag SOS,8250/drag-sos/
-2|FBI,3235/fbi/
-5|Harley Quinn,29596/harley-quinn/
+Y|Doom Patrol,4466/doom-patrol/
+#Z|Emergence,16590/emergence/
+Y|FBI,3235/fbi/
+Y|Harley Quinn,29596/harley-quinn/
 Y|Harrow,2730/harrow/
+Z|High Score,133055/high-score/
 0|His Dark Materials,23839/his-dark-materials/
-Y|Impulse,2925/impulse/
-Z|Killjoys,1281/killjoys/
-4|Legacies,3530/legacies/
-Y|Lucifer,1582/lucifer/@Returning Saturday, 6-Jun-2020
-Y|Lucky Man,1584/stan-lees-lucky-man/
-Y|Manifest,3228/manifest/@Returning Monday, 6-Jan-2020
-Y|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
-Z|Marvels Runaways,2543/runaways/
+Y|Hitmen,58343/hitmen/
+Y|I May Destroy You,91891/i-may-destroy-you/
+#Z|Impulse,2925/impulse/
+#Y|Kidding,2999/kidding/
+Y|Legacies,3530/legacies/@Returning Thursday, 21-Jan-2021
+Y|Lovecraft Country,131763/lovecraft-country/
+Y|Lucifer,1582/lucifer/
+#Z|Lucky Man,1584/stan-lees-lucky-man/
+Y|Mandy,129944/mandy/
+Y|Manifest,3228/manifest/
+#Z|Marvels Agents of SHIELD,878/marvels-agents-of-shield/
+#Z|Messiah,33193/messiah/
 Y|Mindhunter,2489/mindhunter/
-Y|Miracle Workers,4423/miracle-workers/@Returning Tuesday, 28-Jan-2020
-3|Nancy Drew,19005/nancy-drew/
-NeXt,0//@Starting Q2-2020
+Y|Miracle Workers,4423/miracle-workers/
+Y|Moonbase 8,179038/moonbase-8/
+Y|Murdoch Mysteries,1461/murdoch-mysteries/
+2|NeXt,160435/next/
 Y|Our Cartoon President,2668/our-cartoon-president/
-7|Raised by Wolves,0//
-Z|Reef Break,7443/reef-break/
-Resident Alien,0//
-#0|Shameless,440/shameless-us/
-Y|Siren,2769/siren/
-Snowpiercer,0//@Starting Spring-2020
+#Z|Outmatched,34450/outmatched/
+Y|Prodigal Son,16465/prodigal-son/@Returning Tuesday, 12-Jan-2021
+4|Raised by Wolves,141999/raised-by-wolves/
+Resident Alien,0//@Starting on Wednesday, 27-Jan-2021
+Y|See,23338/see/
+Y|Sex Education,33290/sex-education/
+#Z|Siren,2769/siren/
+Y|Snowpiercer,81173/snowpiercer/@Returning Monday, 25-Jan-2021
+Y|Space Force,86906/space-force/
 Y|Stranger Things,1861/stranger-things/
-7|Star Trek Picard,0//@Starting Friday, 24-Jan-2020
-Y|Star Trek Discovery,2249/star-trek-discovery/
-#0|Supergirl,1222/supergirl/
-Z|The Big Bang Theory,23/the-big-bang-theory/
-Y|The Dark Crystal Age of Resistance,13344/the-dark-crystal-age-of-resistance/
-7|The Dresden Files,0//
-Y|The Expanse,1342/the-expanse/
-Z|The Inbetween,6384/the-inbetween/
-0|The L Word Generation Q,29436/the-l-word-generation-q/
-Y|The Magicians,1527/the-magicians/@Returning Wednesday, 15-Jan-2020
+4|Star Trek Discovery,2249/star-trek-discovery/
+Y|Star Trek Lower Decks,125226/star-trek-lower-decks/
+Y|Star Trek Picard,34201/star-trek-picard/
+7|Star Trek Section 31,0//
+Y|The Expanse,1342/the-expanse/@Returning Wednesday, 16-Dec-2020
+Y|The Genetic Detective,85896/the-genetic-detective/
+5|The Graham Norton Show,1262/the-graham-norton-show/
+Y|The L Word Generation Q,29436/the-l-word-generation-q/
+#Z|The Magicians,1527/the-magicians/
 5|The Mandalorian,25836/the-mandalorian/
-Y|The Mountain,22563/the-mountain/
-Y|The Orville,2151/the-orville/@Returning Late-2020
-Y|The Outpost,2954/the-outpost/
-Y|The Rook,8042/the-rook/
-#0|The Simpsons,249/the-simpsons/
+Y|The Orville,2151/the-orville/
+0|The Outpost,2954/the-outpost/
+#Z|The Rook,8042/the-rook/
+Y|The Simpsons,249/the-simpsons/
 Y|The Umbrella Academy,4455/the-umbrella-academy/
-5|The Witcher,0//@Starting Friday, 20-Dec-2019
-Y|Titans,3540/titans/
-Y|Warrior 2019,0//
-0|Watchmen,21048/watchmen/
-Y|Westworld,1913/westworld/@Returning in 2020
-Y|Why Women Kill,11599/why-women-kill/
+Z|The Undoing,171196/the-undoing/
+Y|The Witcher,31307/the-witcher/
+#Z|United We Fall,112988/united-we-fall/
+Y|Upright,30237/upright/
+Y|Warrior Nun,105193/warrior-nun/
+Y|Westworld,1913/westworld/
 4|Young Sheldon,2250/young-sheldon/
+Y|Younger,1219/younger/
+
+# @Starting on Xxxday, DD-Mmm-20YY
+
+#     Last updated 8-Dec-2020
