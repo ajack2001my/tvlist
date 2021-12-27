@@ -29,6 +29,9 @@ CSS Highlight code adapted from
 {$DEFINE EASTEREGG2}
 {$DEFINE DNSHELP8888}
 {$DEFINE BROWSERHELP}
+{$DEFINE ANIMESEARCH}
+{$DEFINE xCUSTOMSEARCH}
+
 
 PROGRAM TVList;
 
@@ -41,22 +44,22 @@ USES
   SysUtils;
 
 CONST
-  ProgName             = 'TVList';
-  ProgVer              = 'v0.9.7';
-  ProgDate             = '20210804';
-  ProgAuthor           = 'Adrian Chiang';
-  ProgDesc             = 'An EZTV Series Manager';
+  ProgName        = 'TVList';
+  ProgVer         = 'v0.9.9';
+  ProgDate        = '20211227';
+  ProgAuthor      = 'Adrian Chiang';
+  ProgDesc        = 'An EZTV Series Manager';
 
-  MyBitCoin            = '1FSMJRMk65o25frAsBoMYoZEZMkqncQ4Jm';
+  MyBitCoin       = '1FSMJRMk65o25frAsBoMYoZEZMkqncQ4Jm';
 
-  CTime                = {$I %TIME%};
-  CDate                = {$I %DATE%};
+  CTime           = {$I %TIME%};
+  CDate           = {$I %DATE%};
 
-  EZTVPageMax          = 512;
+  EZTVPageMax     = 512;
 
-  LL1 = '$' + ProgName + '(';
-  LL2 = ') took ';
-  LL3 = ' second(s) to generate HTML...';
+  LL1             = '$' + ProgName + '(';
+  LL2             = ') took ';
+  LL3             = ' second(s) to generate HTML...';
 
   Desc_Show       = 'Name of the show';
   Desc_EZTV       = 'Go to EZTV''s show info page or search the EZTV database for similar name episodes.';
@@ -68,7 +71,8 @@ CONST
   Desc_General    = 'Search in Google for your TV dramas.';
   Desc_DNS8888    = 'Click to learn how to change the DNS address to your own choosing.';
   Desc_Firefox2   = 'In ''about:config'', change ''dom.block_multiple_popups'' to ''false''';
-  Desc_Chrome2    = 'Chrome will alert you with a ''Pop-ups were blocked on this page'' icon, click the icon and select ''Always allow pop-ups and redirects...''';
+  Desc_Chrome2    = 'Chrome will alert you with a ''Pop-ups were blocked on this page'' icon, click the icon ' +
+                    'and select ''Always allow pop-ups and redirects...''';
   Desc_Opera2     = 'Opera will alert you with a ''Pop-up blocked'' icon, click the icon and select ''Always allow pop-ups from...''';
   
   URL_TVList_Source  = 'https://www.github.com/ajack2001my/tvlist';
@@ -77,6 +81,9 @@ CONST
 
   TDStr         = '<TD ALIGN="CENTER">';
   HTMLSpace     = '&nbsp;';
+  
+  AnimeHiragana = '&#x30a2;&#x30cb;&#x30e1;';
+  AnimeFlag     = '^';
 
   TVListString  = 'tvlist';
   TVList_Data   = TVListString + '.txt';
@@ -119,6 +126,7 @@ VAR
   StatusEnded,
   StatusBreak,
   StatusRunning,
+  AnimeXlateGroup,
   L1,
   L2,
   L3,
@@ -248,10 +256,10 @@ BEGIN
   URL[ 5] := 'http://tvline.com';
   URL[ 6] := 'https://yesmovies.ag';                       {URL_YesMovies}
   URL[ 7] := 'https://tvseriesfinale.com';
-  URL[ 8] := '';
+  URL[ 8] := 'https://nyaa.si';                            {URL_Nyaa}
   URL[ 9] := 'https://limetorrents.cc';                    {URL_LimeTorrent}
   URL[10] := 'https://next-episode.net';                   {URL_NextEpisode}          
-  URL[11] := '';
+  URL[11] := 'http://eztvstatus.com';
   URL[12] := 'https://torrentzeu.org';                     {URL_TorrentZ2}
   URL[13] := 'http://1337x.to';                            {URL_1337x}
   URL[14] := 'https://www.google.com';                     {URL_Google}
@@ -274,6 +282,7 @@ BEGIN
   StatusEnded        := '"#CC0000"';
   StatusUnknown      := '"#FFA500"';
   StatusRunning      := '"#000000"';
+  AnimeXlateGroup    := '';
 
   IF FileExists (TVList_Config) THEN
     BEGIN
@@ -307,10 +316,12 @@ BEGIN
 	    		  _UpdateVAR (URL[2], 'URL_ThePirateBay', X);
     			IF Pos ('URL_TorGalaxy=', X) > 0 THEN
 	    		  _UpdateVAR (URL[16], 'URL_TorGalaxy', X);
-{
-    			IF Pos ('URL_ExtraTorrent=', X) > 0 THEN
-	    		  _UpdateVAR (URL[8], 'URL_ExtraTorrent', X);
-}
+
+    			IF Pos ('URL_Nyaa=', X) > 0 THEN
+	    		  _UpdateVAR (URL[8], 'URL_Nyaa', X);
+    			IF Pos ('AnimeXlateGroup=', X) > 0 THEN
+	    		  _UpdateVAR (AnimeXlateGroup, 'AnimeXlateGroup', X);
+
     			IF Pos ('URL_LimeTorrent=', X) > 0 THEN
 	    		  _UpdateVAR (URL[9], 'URL_LimeTorrent', X);
     			IF Pos ('URL_TorrentZ2=', X) > 0 THEN
@@ -361,11 +372,11 @@ BEGIN
   LinkURL[ 6] := URL[ 5] + '/tag/';
   LinkURL[ 7] := URL[ 6] + '/searching/';
   LinkURL[ 8] := URL[ 7] + '/tv-show/';
-  LinkURL[ 9] := URL[ 8] + '/search/?search=';
+  LinkURL[ 9] := URL[ 8] + '/?f=0&c=0_0&q=';
   LinkURL[10] := URL[ 9] + '/search/all/';
   LinkURL[11] := URL[10] + '/search/?name=';
   LinkURL[12] := URL[11] + '/?s=';
-  LinkURL[13] := URL[12] + '/verified?f=';
+  LinkURL[13] := URL[12] + '/kick.php?q=';
   LinkURL[14] := URL[13] + '/search/';
   LinkURL[15] := URL[14] + '/search?&q=';
   LinkURL[16] := URL[16] + '/torrents.php?search=';
@@ -454,18 +465,17 @@ PROCEDURE Write_Headers;
 BEGIN
   WriteLn (T, '<FONT FACE="', HTML_FontName, '">');
   WriteLn (T, '<FONT SIZE=+1>', L1, '<BR>');
-  WriteLn (T, '&copy;' + L2 + '<P></FONT>');
-{ 
-  WriteLn (T, '<FONT SIZE=-1><I>' + L3 + '</I><BR>');
-}
+  WriteLn (T, '&copy;' + L2 + '</FONT>');
 
-Write   (T, '<P STYLE="text-align:left;">');
-Write   (T, '<FONT SIZE=-1><I>', L3, '</I>');
-Write   (T, '<SPAN STYLE="float:right;">');
+  WriteLn (T, '<SPAN STYLE="float:right;"><A HREF="' + URL[11] + '" TARGET=_BLANK><B>&#91;EZTV STATUS&#93;</B></A></SPAN>');
+  
+  Write   (T, '<P STYLE="text-align:left;">');
+  Write   (T, '<FONT SIZE=-1><I>', L3, '</I>');
+  Write   (T, '<SPAN STYLE="float:right;">');
 
 {$IFDEF DNSHELP8888}
-Write   (T, '<A HREF="', URL_HOWTO_DNS, '" TARGET=_BLANK TITLE="', Desc_DNS8888, '">');
-WriteLn (T, '<B>Website blocked? Use DNS 8.8.8.8 or 8.8.4.4</B></A>');
+  Write   (T, '<A HREF="', URL_HOWTO_DNS, '" TARGET=_BLANK TITLE="', Desc_DNS8888, '">');
+  WriteLn (T, '<B>Website blocked? Use DNS 8.8.8.8 or 8.8.4.4</B></A>');
 {$ENDIF}
 
 WriteLn (T, '</SPAN></P></FONT>');
@@ -585,7 +595,8 @@ BEGIN
   Write (T, '.');
   Write (T, '</CENTER></TD></TR></TABLE>');
   
-  Write (T, '<CENTER><A HREF="', LinkURL[2], 'S01E01" TARGET="_BLANK">New Shows on EZTV.<IMG HEIGHT="', NewIconHeight, '" SRC="data:image/png;base64,');
+  Write (T, '<CENTER><A HREF="', LinkURL[2], 'S01E01" TARGET="_BLANK">New Shows on EZTV.<IMG HEIGHT="', NewIconHeight, 
+            '" SRC="data:image/png;base64,');
   FOR J := 1 TO 63 DO 
     Write (T, Base64New[J]);
   WriteLn (T, '"/></A>');
@@ -598,28 +609,18 @@ BEGIN
   Write (T, '<A TITLE="', Desc_Opera2, '"><B>Opera', HTMLSpace, '</B></A>.');
 {$ENDIF}
 
-
-
   Write (T, '</CENTER>');
-
 
   Write (T, '<P><TT><CENTER>Homepages for', HTMLSpace);
 
   Write (T, '<A HREF="', URL[ 1], '" TARGET="_BLANK">EZTV</A>,', HTMLSpace);
+  Write (T, '<A HREF="', URL[ 8], '" TARGET="_BLANK">Nyaa(', AnimeHiragana, ')</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[ 2], '" TARGET="_BLANK">The Pirate Bay</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[ 9], '" TARGET="_BLANK">Lime Torrent</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[16], '" TARGET="_BLANK">Torrent Galaxy</A>,', HTMLSpace);
-{  
-  Write (T, '<A HREF="', URL[ 8], '/home " TARGET="_BLANK">Extra Torrent</A>,', HTMLSpace);
-}
   Write (T, '<A HREF="', URL[12], '" TARGET="_BLANK">Torrentz2</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[13], '" TARGET="_BLANK">1337x</A>,', HTMLSpace);
-  Write (T, '<A HREF="', URL[ 3], '" TARGET="_BLANK">TV</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[10], '" TARGET="_BLANK">Next Episode</A>,', HTMLSpace);
-  Write (T, '<A HREF="', URL[ 4], '" TARGET="_BLANK">Variety</A>,', HTMLSpace);
-  Write (T, '<A HREF="', URL[ 5], '" TARGET="_BLANK">TV Line</A>,', HTMLSpace);
-  Write (T, '<A HREF="', URL[ 7], '" TARGET="_BLANK">TV Series Finale</A>,', HTMLSpace);
-  Write (T, '<A HREF="', URL[15], '" TARGET="_BLANK">Return Dates</A>,', HTMLSpace);
 
   Write (T, 'and', HTMLSpace);
 
@@ -702,11 +703,11 @@ BEGIN
   
   xEnd := getTickCount64;
   xDiff := (xEnd - xStart) / 1000;
-  Write (T, '<P/><HR><I><FONT SIZE=-1>', LL1, OSVersion, LL2, xDiff:3:2, LL3);
+  Write (T, '<P/><TT><HR><I><FONT SIZE=-1>', LL1, OSVersion, LL2, xDiff:3:2, LL3);
   Write (T, '<BR/>$Program compiled at ' + CTime + ' (local time) on ' + CDate + '<BR>');
   Write (T, '$Get the source code from <A HREF="', URL_TVList_Source, '" TARGET="_BLANK">github.com</A><BR>');
   Write (T, '$BitCoin Donate', HTMLSpace, '<A HREF="bitcoin:', MyBitCoin, '">', MyBitCoin, '</A></I>');
-  WriteLn (T, '</FONT></FONT>');
+  WriteLn (T, '</FONT></FONT></TT>');
 
 {$IFDEF EASTEREGG2}
   WriteLn (T, '<P/ ALIGN="RIGHT"><A HREF="https://www.cultdeadcow.com/" TARGET=_BLANK>&pi;</A>');
@@ -748,7 +749,8 @@ END;
 PROCEDURE Prog_Message;
 BEGIN
   L1 := ProgName + ' ' + ProgVer + ' - ' + ProgDesc + ' - Created by ' + ProgAuthor + '. Build ' + ProgDate;
-  L2 := ' Copyright ' + ProgAuthor + ', 2015-' + ProgDate[1] + ProgDate[2] + ProgDate[3] + ProgDate[4] + '. All Rights Reserved. Distributed under an MIT license.';
+  L2 := ' Copyright ' + ProgAuthor + ', 2015-' + ProgDate[1] + ProgDate[2] + ProgDate[3] + ProgDate[4] + 
+        '. All Rights Reserved. Distributed under an MIT license.';
   L3 := 'List generated on ' + DayName[xuDa] + ', ' + Num2Str(xDa) + '-' + MonthName[xMo] + '-' +
         Num2Str(xYe) + ', ' + Num2Str(xHo) + ':' + Num2Str(xMi) + ':' + Num2Str(xSe) + ' UTC' +
 		R2S(GetLocalTimeOffset);
@@ -756,6 +758,7 @@ BEGIN
   WriteLn (L1);
   WriteLn ('(c)', L2);
   WriteLn;
+  
   WriteLn (L3);
   WriteLn;
 END;
@@ -805,6 +808,11 @@ END;
 
 
 PROCEDURE ProcessData;
+VAR
+  IsAnime : Boolean;
+  AS      : String;
+  _I      : Word;
+  
   PROCEDURE _Showday(SS: String; C: Char);
   BEGIN
     Inc (EZTVPageCount);
@@ -812,8 +820,10 @@ PROCEDURE ProcessData;
 	EZTVDay[EZTVPageCount] := C;
   END;
 BEGIN
+
   WHILE NOT Eof (S) DO
     BEGIN
+      IsAnime := False;
       REPEAT
         ReadLn (S, W);
 		ExtractComments;
@@ -840,6 +850,20 @@ BEGIN
           XN := '';
           FOR I := 1 TO (V - 1) DO
             XN := XN + W[I];
+		  IF Pos (AnimeFlag, XN) > 0 THEN
+		    BEGIN
+			  AnimeXlateGroup := '';
+			  AS := Copy (XN, Pos (AnimeFlag, XN) + 1, (Length(XN) - Pos (AnimeFlag, XN))); 
+			  FOR _I := 1 TO Length(AS) DO 
+			    IF AS[_I] = ' ' THEN 
+				  AS[_I] := '+';
+			  IF Length(AS) > 1 THEN 
+			    AnimeXlateGroup := AS;
+			  AS := Copy (XN, 1, Pos(AnimeFlag, XN) - 1);
+			  XN := AS;
+			  IsAnime := True;
+			END;
+			
           Write (T, '<TR');
 
           IF NOT DisplayHighlight THEN
@@ -878,19 +902,30 @@ BEGIN
 
 		  Write (T,  TDStr + '<A HREF="', LinkURL[15], RepSpaceStr('+', XN), '+%2BTV+%2BShow" TARGET="_BLANK">Google</A>');
 
-          Write (T, TDStr + '<A HREF="', LinkURL[ 3], RepSpaceStr('+', XN), '" TARGET="_BLANK">PirateBay</A>,', HTMLSpace);
+          Write (T, TDStr);
+
+{$IFDEF ANIMESEARCH}
+          IF IsAnime THEN
+		    BEGIN
+  		      Write (T, '<A HREF="', LinkURL[ 9]);
+			  IF AnimeXlateGroup = '' THEN ELSE
+			    Write (T, AnimeXlateGroup + '+');
+			  Write (T, RepSpaceStr('+', XN), '" TARGET="_BLANK">' + AnimeHiragana + '</A>,', HTMLSpace);
+            END;
+{$ENDIF}
+
+          Write (T, '<A HREF="', LinkURL[ 3], RepSpaceStr('+', XN), '" TARGET="_BLANK">PirateBay</A>,', HTMLSpace);
           Write (T, '<A HREF="', LinkURL[10], XN, '/" TARGET="_BLANK">LimeTor</A>,', HTMLSpace);
-{		  
-          Write (T, '<A HREF="', LinkURL[ 9], RepSpaceStr('+', XN), '" TARGET="_BLANK">ExtraTor</A>,', HTMLSpace);
-}          
 		  Write (T, '<A HREF="', LinkURL[16], RepSpaceStr('+', XN), '" TARGET="_BLANK">TorGalaxy</A>,', HTMLSpace);
-          Write (T, '<A HREF="', LinkURL[13], RepSpaceStr('+', XN), '&safe=1" TARGET="_BLANK">Torz2</A>,', HTMLSpace);
-          Write (T, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '/1/" TARGET="_BLANK">1337x</A></TD>');
+          Write (T, '<A HREF="', LinkURL[13], RepSpaceStr('+', XN), '" TARGET="_BLANK">Torz2</A>,', HTMLSpace);
+          Write (T, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '/1/" TARGET="_BLANK">1337x</A>');
+{$IFDEF CUSTOMSEARCH}
+          Write (T, ',', HTMLSpace, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '+MiNX/1/" TARGET="_BLANK">MiNX</A>');
+{$ENDIF}		  
+		  Write (T, '</TD>');
 		
           Write (T, TDStr + '<A HREF="', LinkURL[11], RepSpaceStr('-', XN), '" TARGET="_BLANK">NextEpisode</A>,', HTMLSpace);
-          Write (T, '<A HREF="', LinkURL[ 4], XN, '" TARGET="_BLANK">TVcom</A>,', HTMLSpace);
           Write (T, '<A HREF="', LinkURL[ 8], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVfinale</A></TD>');
-		
           Write (T, TDStr + '<A HREF="', LinkURL[ 5], XN, '" TARGET="_BLANK">Variety</A>,', HTMLSpace);
           Write (T, '<A HREF="', LinkURL[ 6], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVLine</A></TD>');
 		

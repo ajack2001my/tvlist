@@ -1,104 +1,105 @@
-#######################################################################################################
+##################################################################################################################
 #
 #        Sample TVLIST.TXT file for generating your list of favorite show into TVLIST.HTM
 #
-#######################################################################################################
+##################################################################################################################
 #
 # "#" at column 1 denotes the line is a commentary line and should be ignored.
 #
 # Format is:
 #
-#     N|Name,Path@Comment
+#     N|Name^,Path@Comment
 #
 #     N            = 0..7, 0=Sunday, 1=Monday, etc.; 7=Unknown, Y=Break, Z=Ended
-#     Name         = Name of Show
-#     Path         = EZTV Path to your specific show, if EZTV does not have a dedicated page use "0//"
+#     Name         = Name of Show.
+#     ^            = Denotes this is a Japanese Anime and will add an extra search option. You can also 
+#                    put a translator group name after this character. If more than one group is used to
+#                    follow the anime, use the pipe "|" command without quotes.
+#     Path         = EZTV Path to your specific show, if EZTV does not have a dedicated page use "0//".
 #     @            = Will add text as a mouse-over comment to series name. Should be at the end of line.
-#
 #     
 
-Y|A Discovery of Witches,3037/a-discovery-of-witches/
-Z|American Gods,2032/american-gods/
-Y|Batwoman,18492/batwoman/@Returning Sunday, 13-Oct-2021
+1|4400,358488/4400/
+5|A Discovery of Witches,3037/a-discovery-of-witches/@Returning Friday, 7-Jan-2022
+Y|Another Life,9777/another-life/
+4|B Positive,177894/b-positive/
 Y|Biohackers,133614/biohackers/
-Z|Black Lightning,2621/black-lightning/
-Z|Bosch,1195/bosch/
-Z|Chilling Adventures of Sabrina,3534/chilling-adventures-of-sabrina/
-Y|Coroner,4151/coroner/
-Z|Cursed,113710/cursed/
-0|DCs Legends of Tomorrow,1568/legends-of-tomorrow/
-Z|Debris,241239/debris/
+0|Blade Runner Black Lotus^KaiDubs+720p,366151/blade-runner-black-lotus/
+4|Coroner,4151/coroner/@Returning Thursday, 6-Jan-2022
+Z|Cowboy Bebop,368049/cowboy-bebop/
+3|DCs Legends of Tomorrow,1568/legends-of-tomorrow/@Returning Wednesday, 12-Jan-2022
 Y|Disenchantment,2979/disenchantment/
 Y|Doom Patrol,4466/doom-patrol/
-Y|Euphoria,7208/euphoria/
+Y|Euphoria,7208/euphoria/@Returning Sunday, 9-Jan-2022
+2|Fantasy Island,342897/fantasy-island/@Returning Special on Tueday, 21-Dec-2021
 Y|Fate the Winx Saga,220192/fate-the-winx-saga/
-Y|FBI,3235/fbi/@Returning Tuesday, 21-Sep-2021
-Y|God Shave the Queens,158584/god-shave-the-queens/
+4|Firebite,378789/firebite/
+Y|Foundation,344366/foundation/
+5|Ghosts 2021,0//
 Y|Harley Quinn,29596/harley-quinn/
 Y|Harrow,2730/harrow/
-7|Hawkeye,0//@Starting on Wednesday, 24-Nov-2021
-Z|Helstrom,165813/helstrom/
+3|Hawkeye,370325/hawkeye/
 Y|His Dark Materials,23839/his-dark-materials/
-Y|Kung Fu 2021,271820/kung-fu/
-Y|Legacies,3530/legacies/@Returning Thursday, 14-Oct-2021
-Y|Leverage Redemption,0//
+3|Kung Fu 2021,271820/kung-fu/@Returning Wednesday, 9-Mar-2022
+Y|La Brea,346573/la-brea/
+4|Legacies,3530/legacies/
+Y|Leverage Redemption,308234/leverage-redemption/
 Y|Loki,293695/loki/
-Y|Lost in Space 2018,2866/lost-in-space/
-Y|Lucifer,1582/lucifer/@Returning Friday, 10-Sep-2021
-Y|Mandy,129944/mandy/
-Z|Manifest,3228/manifest/
+Z|Marvels Agent Carter,1144/marvels-agent-carter/
 Y|Marvel Studios Assembled,246769/marvel-studios-assembled/
 Y|Marvel Studios Legends,214995/marvel-studios-legends/
-7|Marvel What If,0//@Starting on Wednesday, 11-Aug-2021
 Y|Miss Scarlet and the Duke,68443/miss-scarlet-and-the-duke/
-2|Miracle Workers,4423/miracle-workers/
-2|Motherland Fort Salem,55064/motherland-fort-salem/
-Y|Murdoch Mysteries,1461/murdoch-mysteries/
-Z|NeXt,160435/next/
-2|Night Head 2041,0//
-Y|Our Cartoon President,2668/our-cartoon-president/
+Y|Miracle Workers,4423/miracle-workers/
+Y|Motherland Fort Salem,55064/motherland-fort-salem/
+Y|One Punch Man^SSA 480p,27717/one-punch-man/
 Y|Pacific Rim The Black,242245/pacific-rim-the-black/
-Z|Prodigal Son,16465/prodigal-son/
-Y|Punky Brewster,238581/punky-brewster/
-Y|Raised by Wolves,141999/raised-by-wolves/
-Y|Resident Alien,223156/resident-alien/
-0|Rick and Morty,1017/rick-and-morty/
-1|Roswell New Mexico,4200/roswell-new-mexico/
-1|Searching for Secrets,298166/agents-of-shield-double-agent-searching-for-secrets/
-5|See,23338/see/@Returning Tuesday, 27-Aug-2021
-Y|Sex Education,33290/sex-education/@Returning Friday, 17-Sep-2021
+7|Peacemaker,0//@Starting on Sunday, 16-Jan-2022
+4|Raised by Wolves,141999/raised-by-wolves/@Returning Thursday, 3-Feb-2022
+2|Raising Dion,18028/raising-dion/@Returning Tuesday, 1-Feb-2022
+Y|Red Election,348486/red-election/
+3|Resident Alien,223156/resident-alien/@Returning Wednesday, 26-Jan-2022
+Y|Rick and Morty,1017/rick-and-morty/
+Y|Roswell New Mexico,4200/roswell-new-mexico/
+Y|See,23338/see/
+Y|Sex Education,33290/sex-education/
 Y|Shadow and Bone,268566/shadow-and-bone/
-Y|Snowpiercer,81173/snowpiercer/
-Y|Stranger Things,1861/stranger-things/
-Y|Star Trek Discovery,2249/star-trek-discovery/
-Y|Star Trek Lower Decks,125226/star-trek-lower-decks/@Returning Thursday, 12-Aug-2021
-Y|Star Trek Picard,34201/star-trek-picard/
+4|Shaman King^FunArts|Tenrai-Sensei,323278/shaman-king/
+Y|Sort of,349420/sort-of/
+Y|Squid Game,341090/squid-game/
+Y|Stargirl,81199/stargirl/
+4|Star Trek Discovery,2249/star-trek-discovery/
+Y|Star Trek Lower Decks,125226/star-trek-lower-decks/
+Y|Star Trek Picard,34201/star-trek-picard/@Returning ??-Feb-2022
+4|Star Trek Prodigy,359215/star-trek-prodigy/@Returning Thursday, 6-Jan-2022
 7|Star Trek Section 31,0//
-5|Star Wars The Bad Batch,274696/star-wars-the-bad-batch/
-2|Superman and Lois,237836/superman-and-lois/
-Y|The Expanse,1342/the-expanse/
-Z|The Falcon and The Winter Soldier,249322/the-falcon-and-the-winter-soldier/
+Y|Star Wars The Bad Batch,274696/star-wars-the-bad-batch/
+Y|Star Wars Visions,343343/star-wars-visions/
+3|Station Eleven,378790/station-eleven/
+Y|Stranger Things,1861/stranger-things/
+3|The Book of Boba Fett,0//@Starting on Wednesday, 29-Dec-2021
+0|The Equalizer,229291/the-equalizer/@Returning Sunday, 2-Jan-2022
+5|The Expanse,1342/the-expanse/
 Y|The Flight Attendant,186963/the-flight-attendant/
-Y|The Graham Norton Show,1262/the-graham-norton-show/
-Y|The L Word Generation Q,29436/the-l-word-generation-q/@Returning Sunday, 8-Aug-2021
+5|The Graham Norton Show,1262/the-graham-norton-show/
+Y|The Handmaids Tale,2090/the-handmaids-tale/
+Y|The L Word Generation Q,29436/the-l-word-generation-q/
 Y|The Mandalorian,25836/the-mandalorian/
-5|The Mysterious Benedict Society,301667/the-mysterious-benedict-society/
+Y|The Mysterious Benedict Society,301667/the-mysterious-benedict-society/
 Y|The Nevers,262296/the-nevers/
-Y|The Orville,2151/the-orville/
-4|The Outpost,2954/the-outpost/
-Y|The Simpsons,249/the-simpsons/@Returning Sunday, 26-Sep-2021
+4|The Orville,2151/the-orville/@Returning Thursday, 10-Mar-2022
+Z|The Outpost,2954/the-outpost/
+0|The Simpsons,249/the-simpsons/
 Y|The Umbrella Academy,4455/the-umbrella-academy/
-Y|The Witcher,31307/the-witcher/@Returning Monday, 23-Aug-2021
-Z|Travelers,2255/travelers/
-Y|Turner and Hooch,0//
-Z|WandaVision,216444/wandavision/
+5|The Wheel of Time,368023/the-wheel-of-time/
+5|The Witcher,31307/the-witcher/
+Y|Titans,3540/titans/
 Y|Warrior Nun,105193/warrior-nun/
 Y|Westworld,1913/westworld/
-4|Why Women Kill,11599/why-women-kill/
-Y|Young Sheldon,2250/young-sheldon/@Returning Thursday, 7-Oct-2021
-Z|Younger,1219/younger/
+Y|What If,349687/what-if/
+Y|Why Women Kill,11599/why-women-kill/
+4|Young Sheldon,2250/young-sheldon/
 
-# @Starting on Xxxday, DD-Mmm-20YY
-# @Returning Monday, 25-Jan-2021
+# @Starting on Xxxday, 11-Mar-2022
+# @Returning Monday, 25-Jan-2022
 
-#     Last updated 30-Jul-2021
+#     Last updated 17-Dec-2021
