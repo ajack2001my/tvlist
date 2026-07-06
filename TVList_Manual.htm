@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<HTML><HEAD><META CHARSET="UTF-8">
+<TITLE>TVList User Manual</TITLE>
+<STYLE>
+  BODY { font-family: Calibri, Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; }
+  H1 { color: #333; border-bottom: 2px solid #000; }
+  H2 { color: #555; margin-top: 30px; border-left: 4px solid #888; padding-left: 10px; }
+  H3 { color: #666; }
+  CODE { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  PRE { background: #f4f4f4; padding: 12px; border-radius: 5px; overflow-x: auto; }
+  .cmd { background: #222; color: #0f0; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+  .note { background: #fffde7; border-left: 4px solid #f9a825; padding: 10px; margin: 12px 0; }
+  .warn { background: #fce4ec; border-left: 4px solid #c62828; padding: 10px; margin: 12px 0; }
+  TABLE { border-collapse: collapse; width: 100%; }
+  TD, TH { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+  TH { background: #e0e0e0; }
+  TR:nth-child(even) { background: #f9f9f9; }
+</STYLE>
+</HEAD><BODY>
+
+<H1>TVList v1.0.2 — User Manual</H1>
+<P><I>An HTML generator for keeping track of your favorite shows from EZTV.</I></P>
+<P>Developed by Adrian Chiang. Public domain.</P>
+
+<H2>1. Overview</H2>
+<P>TVList reads a plain-text data file (<CODE>tvlist.txt</CODE>) and generates an HTML page (<CODE>tvlist.htm</CODE>) with search links to EZTV, torrent sites, TV news/profiles, streaming sites, and Google for each show you track. It also includes EZTV bookmark quick-checks, jQuery countdown timers for upcoming shows, a toggle-able table, and optional fancy sorting.</P>
+
+<H2>2. Quick Start</H2>
+<OL>
+  <LI>Edit <CODE>tvlist.txt</CODE> with your shows (see Section 4 for format).</LI>
+  <LI>Optionally edit <CODE>tvlist.cfg</CODE> for colors, fonts, and preferences.</LI>
+  <LI>Run <SPAN CLASS="cmd">tvlist</SPAN> (or <SPAN CLASS="cmd">tvlist /s</SPAN> for sorted output).</LI>
+  <LI>Open <CODE>tvlist.htm</CODE> in your browser.</LI>
+</OL>
+
+<H2>3. Installation &amp; Requirements</H2>
+<P>TVList is a Free Pascal-compiled command-line program for Windows (64-bit). It requires:</P>
+<UL>
+  <LI>A Windows 64-bit system</LI>
+  <LI>No installation — just run <CODE>tvlist.exe</CODE></LI>
+  <LI>A modern web browser (Firefox, Chrome, Edge, Opera) to view the output</LI>
+</UL>
+
+<H2>4. The Data File (tvlist.txt)</H2>
+<P>Each line in <CODE>tvlist.txt</CODE> represents one TV show. Lines starting with <CODE>#</CODE> are ignored. The general format is:</P>
+
+<PRE>[YYYYMMDD]StatusChar|ShowName^Group,<EZTV Path></PRE>
+
+<H3>4.1 Status Characters</H3>
+<TABLE>
+  <TR><TH>Char</TH><TH>Meaning</TH><TH>Display</TH></TR>
+  <TR><TD><CODE>0</CODE></TD><TD>Air day: Sunday</TD><TD>s------</TD></TR>
+  <TR><TD><CODE>1</CODE></TD><TD>Air day: Monday</TD><TD>-M-----</TD></TR>
+  <TR><TD><CODE>2</CODE></TD><TD>Air day: Tuesday</TD><TD>--t----</TD></TR>
+  <TR><TD><CODE>3</CODE></TD><TD>Air day: Wednesday</TD><TD>---W---</TD></TR>
+  <TR><TD><CODE>4</CODE></TD><TD>Air day: Thursday</TD><TD>----T--</TD></TR>
+  <TR><TD><CODE>5</CODE></TD><TD>Air day: Friday</TD><TD>-----F-</TD></TR>
+  <TR><TD><CODE>6</CODE></TD><TD>Air day: Saturday</TD><TD>------S</TD></TR>
+  <TR><TD><CODE>X</CODE></TD><TD>In Development</TD><TD>[INDEV]</TD></TR>
+  <TR><TD><CODE>Y</CODE></TD><TD>On Break</TD><TD>[BREAK]</TD></TR>
+  <TR><TD><CODE>Z</CODE></TD><TD>Ended</TD><TD>[ENDED]</TD></TR>
+</TABLE>
+<P>If no status character is present, the show is marked as <CODE>[UNKWN]</CODE> (Unknown).</P>
+
+<H3>4.2 Countdown Dates</H3>
+<P>Add a <CODE>[YYYYMMDD]</CODE> prefix to display a jQuery countdown showing days until that date. Example:</P>
+<PRE>[20260715]3|Show Returning Soon,/shows/12345/</PRE>
+
+<H3>4.3 Anime Flag (^)</H3>
+<P>Add <CODE>^GroupName</CODE> after the show name to flag it as anime. This adds a search link to Nyaa and uses the group name for more targeted searches on LimeTorrent.</P>
+<PRE>3|My Anime^SubsPlease,/shows/12345/</PRE>
+
+<H3>4.4 Truncation Flag (=)</H3>
+<P>Add <CODE>=</CODE> at the end of the show name to truncate the display name (adds ...). The full name is still used for search URLs.</P>
+<PRE>3|A Very Long Show Name That=,/shows/12345/</PRE>
+
+<H3>4.5 Comments (@)</H3>
+<P>Add <CODE>@comment text</CODE> at the end of the line for a mouseover tooltip on the show name.</P>
+<PRE>3|Show Name,/shows/12345/@Returns next month</PRE>
+
+<H3>4.6 Line Format: Examples</H3>
+<PRE># This is a comment line and is ignored
+3|Example Show,/shows/12345/example-show/
+[20260704]0|Weekend Premiere^FansubGroup,/shows/67890/
+X|Coming Soon=Truncated Display,/shows/11111/
+Ended Show,/shows/22222/@This show has finished
+6|Saturday Special,/shows/33333/</PRE>
+
+<H2>5. The Config File (tvlist.cfg)</H2>
+<P><CODE>tvlist.cfg</CODE> is optional. Lines starting with <CODE>#</CODE> are ignored. Configuration keys and their default values:</P>
+
+<TABLE>
+  <TR><TH>Key</TH><TH>Default</TH><TH>Description</TH></TR>
+  <TR><TD><CODE>FancyShow=Y</CODE></TD><TD>Off</TD><TD>Sort output into categories: Running Shows, Upcoming Shows, Other Shows</TD></TR>
+  <TR><TD><CODE>Highlight=Y</CODE></TD><TD>On</TD><TD>Highlight table row/column on mouse hover</TD></TR>
+  <TR><TD><CODE>HTML_RefreshRate=60</CODE></TD><TD>Off</TD><TD>Auto-refresh page every N seconds</TD></TR>
+  <TR><TD><CODE>HTML_FontName=Calibri</CODE></TD><TD>Calibri</TD><TD>HTML font. Use <CODE>\</CODE> for spaces (e.g., <CODE>Comic\Sans\MS</CODE>)</TD></TR>
+  <TR><TD><CODE>Header_Color="#FFFFFF"</CODE></TD><TD>#FFFFFF</TD><TD>Header text color (with quotes)</TD></TR>
+  <TR><TD><CODE>Header_BGColor="#000000"</CODE></TD><TD>#000000</TD><TD>Header background color</TD></TR>
+  <TR><TD><CODE>CSS_Link_Color=#000</CODE></TD><TD>#000</TD><TD>Unvisited link color</TD></TR>
+  <TR><TD><CODE>CSS_VLink_Color=#777</CODE></TD><TD>#777</TD><TD>Visited link color</TD></TR>
+  <TR><TD><CODE>Highlight_BGColor=#FF0</CODE></TD><TD>#FF0</TD><TD>Highlight background color</TD></TR>
+  <TR><TD><CODE>Line1_BGColor="#FFFFFF"</CODE></TD><TD>#FFFFFF</TD><TD>Alternate row background (even)</TD></TR>
+  <TR><TD><CODE>Line2_BGColor="#D0D0D0"</CODE></TD><TD>#D0D0D0</TD><TD>Alternate row background (odd)</TD></TR>
+  <TR><TD><CODE>ComText_Color="#FF0000"</CODE></TD><TD>#FF0000</TD><TD>Comment text color</TD></TR>
+  <TR><TD><CODE>Status_Break="#00EE00"</CODE></TD><TD>#00EE00</TD><TD>Status label: On Break</TD></TR>
+  <TR><TD><CODE>Status_Ended="#CC0000"</CODE></TD><TD>#CC0000</TD><TD>Status label: Ended</TD></TR>
+  <TR><TD><CODE>Status_Unknown="#FFA500"</CODE></TD><TD>#FFA500</TD><TD>Status label: Unknown</TD></TR>
+  <TR><TD><CODE>Status_Running="#000000"</CODE></TD><TD>#000000</TD><TD>Status label: Running</TD></TR>
+  <TR><TD><CODE>Status_InDev="#0000FF"</CODE></TD><TD>#0000FF</TD><TD>Status label: In Development</TD></TR>
+  <TR><TD><CODE>Status_NewShow="#000000"</CODE></TD><TD>#000000</TD><TD>Status label: New Show</TD></TR>
+  <TR><TD><CODE>AnimeXlateGroup=</CODE></TD><TD>(none)</TD><TD>Default anime group for all flagged shows</TD></TR>
+  <TR><TD><CODE>URL_EZTV=</CODE></TD><TD>eztvx.to</TD><TD>Overrides EZTV URL</TD></TR>
+  <TR><TD><CODE>URL_LimeTorrent=</CODE></TD><TD>limetorrents.cc</TD><TD>Overrides LimeTorrent URL</TD></TR>
+  <TR><TD><CODE>URL_1337x=</CODE></TD><TD>1337x.to</TD><TD>Overrides 1337x URL</TD></TR>
+  <TR><TD><CODE>URL_YesMovies=</CODE></TD><TD>yesmovies.ag</TD><TD>Overrides YesMovies URL</TD></TR>
+  <TR><TD><CODE>URL_Ext=</CODE></TD><TD>ext.to</TD><TD>Overrides Ext URL</TD></TR>
+  <TR><TD><CODE>URL_Nyaa=</CODE></TD><TD>nyaa.si</TD><TD>Overrides Nyaa URL</TD></TR>
+  <TR><TD><CODE>URL_Google=</CODE></TD><TD>google.com</TD><TD>Overrides Google URL</TD></TR>
+  <TR><TD><CODE>URL_YouTube=</CODE></TD><TD>youtube.com</TD><TD>Overrides YouTube URL</TD></TR>
+  <TR><TD><CODE>URL_ThePirateBay=</CODE></TD><TD>thepiratebay.org</TD><TD>Overrides TPB URL</TD></TR>
+  <TR><TD><CODE>URL_KickAssTor=</CODE></TD><TD>uindex.org</TD><TD>Overrides UIndex URL</TD></TR>
+</TABLE>
+
+<P>All URL keys use the format <CODE>URL_Key=https://example.com</CODE>. Uncommented lines override the defaults.</P>
+
+<H2>6. Command-Line Usage</H2>
+<P><SPAN CLASS="cmd">tvlist [options] [basename]</SPAN></P>
+
+<TABLE>
+  <TR><TH>Option</TH><TH>Description</TH></TR>
+  <TR><TD><CODE>/s</CODE></TD><TD>Enable FancyShow mode (sorts shows into categories: running, upcoming, other)</TD></TR>
+  <TR><TD><CODE>&lt;basename&gt;</CODE></TD><TD>Use a custom base name instead of <CODE>tvlist</CODE>. Reads <CODE>&lt;basename&gt;.txt</CODE> and writes <CODE>&lt;basename&gt;.htm</CODE>. Example: <SPAN CLASS="cmd">tvlist mylist</SPAN> reads <CODE>mylist.txt</CODE> → writes <CODE>mylist.htm</CODE></TD></TR>
+</TABLE>
+
+<H3>Examples:</H3>
+<PRE>C:\TVList&gt; tvlist
+C:\TVList&gt; tvlist /s
+C:\TVList&gt; tvlist myshowlist /s</PRE>
+
+<H2>7. FancyShow Mode (/s)</H2>
+<P>When enabled (via <CODE>/s</CODE> or <CODE>FancyShow=Y</CODE> in config), TVList sorts the data file into three sections:</P>
+<OL>
+  <LI><B>Running Shows</B> — Shows with status characters 0-6 (currently airing)</LI>
+  <LI><B>Upcoming Shows</B> — Shows with [YYYYMMDD] countdown dates (sorted alphabetically)</LI>
+  <LI><B>Other Shows</B> — Everything else (shows starting with #, or none of the above)</LI>
+</OL>
+<P>The output is written to a temporary file and then read back for HTML generation. Progress is shown on screen: <CODE>.</CODE> for each separating step, <CODE>@</CODE> for unmatched lines, <CODE>*</CODE> during merge. Temp files are automatically deleted when TVList finishes.</P>
+
+<H2>8. Output Features (tvlist.htm)</H2>
+
+<H3>8.1 Table Columns</H3>
+<TABLE>
+  <TR><TH>Column</TH><TH>Description</TH></TR>
+  <TR><TD>Show</TD><TD>Show name (with optional mouseover comment and color)</TD></TR>
+  <TR><TD>Airs</TD><TD>Air day, status label, or jQuery countdown timer</TD></TR>
+  <TR><TD>EZTV</TD><TD>Link to EZTV info page (if available) and search link</TD></TR>
+  <TR><TD>General</TD><TD>Google search link for the show</TD></TR>
+  <TR><TD>Torrent Searches</TD><TD>Links to PirateBay, LimeTorrents, Ext, UIndex, 1337x (and Nyaa for anime)</TD></TR>
+  <TR><TD>TV Profiles</TD><TD>NextEpisode and TVfinale links</TD></TR>
+  <TR><TD>TV News</TD><TD>Variety and TVLine links</TD></TR>
+  <TR><TD>Watch Online</TD><TD>YesMovies streaming link</TD></TR>
+</TABLE>
+
+<H3>8.2 EZTV Quick Checks</H3>
+<P>The "EZTV Quick Checks" section at the bottom lists EZTV show pages grouped by air day (Sun, Mon, Tue, Wed, Thu, Fri, Sat, Others). Click a day link to open multiple EZTV pages for that day's shows in new tabs.</P>
+
+<div class="warn">
+<B>Note:</B> Firefox may block multiple pop-ups. Either change <CODE>dom.block_multiple_popups</CODE> to <CODE>false</CODE> in <CODE>about:config</CODE>, or allow pop-ups for the page in Chrome/Opera.
+</div>
+
+<H3>8.3 Toggle Table</H3>
+<P>The <B>Toggle Shows</B> button hides/shows the data table. Useful when the EZTV Quick Checks section goes off-screen.</P>
+
+<H3>8.4 Easter Eggs</H3>
+<UL>
+  <LI>Random humorous quote in the footer (200 quotes included)</LI>
+  <LI>Snowflake animation from Dec 18 to Dec 31 (configurable)</LI>
+  <LI>π symbol link to cDc website</LI>
+</UL>
+
+<H3>8.5 Site Status Dropdown</H3>
+<P>Use the "Site Status" dropdown to check if EZTV, 1337x, and other torrent sites are currently accessible via isitdownrightnow.com.</P>
+
+<H3>8.6 Subtitles Utility</H3>
+<P>The "Subtitles Utility" dropdown provides links to translate, extract, convert, and locate subtitle files.</P>
+
+<H2>9. Compiling from Source</H2>
+<P>TVList is written in Free Pascal and compiled with:</P>
+<PRE>fpc -Twin64 -Px86_64 -O3 -B tvlist.pas</PRE>
+<P>The <CODE>_Compile.cmd</CODE> script handles the full build (requires FPC installed and the <CODE>ww.bat</CODE> environment setup).</P>
+
+<P>Source code is available at: <A HREF="https://www.github.com/ajack2001my/tvlist">github.com/ajack2001my/tvlist</A></P>
+
+<H2>10. Known Limitations</H2>
+<UL>
+  <LI><B>Multiple pop-ups:</B> Firefox blocks multiple <CODE>window.open()</CODE> calls by default. See Section 8.2 for workarounds.</LI>
+  <LI><B>Config file parsing:</B> Values must have no spaces around the <CODE>=</CODE> sign (e.g., <CODE>Key=Value</CODE>, not <CODE>Key = Value</CODE>).</LI>
+  <LI><B>File naming:</B> Custom base names cannot contain dots (a dot marks a parameter as an output filename override).</LI>
+  <LI><B>Data file:</B> Maximum 512 EZTV pages tracked, 10,000 lines for sorting in FancyShow mode.</LI>
+  <LI><B>HTML output:</B> No HTML encoding on show names — special characters like <CODE>&lt;</CODE>, <CODE>&gt;</CODE>, <CODE>"</CODE> in show names may render oddly or break the HTML.</LI>
+</UL>
+
+<H2>11. Troubleshooting</H2>
+
+<TABLE>
+  <TR><TH>Problem</TH><TH>Solution</TH></TR>
+  <TR><TD>"Error, file tvlist.txt not found"</TD><TD>Ensure <CODE>tvlist.txt</CODE> exists in the same directory as <CODE>tvlist.exe</CODE>.</TD></TR>
+  <TR><TD>Config changes not applied</TD><TD>Make sure lines are not commented out with <CODE>#</CODE>, and there are no spaces around <CODE>=</CODE>.</TD></TR>
+  <TR><TD>FancyShow not working</TD><TD>Use <CODE>/s</CODE> flag or verify <CODE>FancyShow=Y</CODE> (not commented) in config.</TD></TR>
+  <TR><TD>Browser shows multiple pop-ups blocked</TD><TD>Configure your browser to allow pop-ups from this page (see Section 8.2).</TD></TR>
+  <TR><TD>Anime search not appearing</TD><TD>Ensure show name contains <CODE>^</CODE> flag (e.g., <CODE>Show Name^Group</CODE>).</TD></TR>
+  <TR><TD>Countdown not working</TD><TD>Verify the date format is exactly <CODE>[YYYYMMDD]</CODE> at the start of the line.</TD></TR>
+</TABLE>
+
+<H2>12. Donate</H2>
+<P>If you find TVList useful, Bitcoin donations are appreciated:</P>
+<P><CODE>1FSMJRMk65o25frAsBoMYoZEZMkqncQ4Jm</CODE></P>
+<P>Source code: <A HREF="https://www.github.com/ajack2001my/tvlist">github.com/ajack2001my/tvlist</A></P>
+
+</BODY></HTML>

@@ -1,4 +1,19 @@
 {
+
+JavaScript code has been compressed using JSCompress - The JavaScript Compression 
+Tool (https://jscompress.com)
+
+Copyright (c) 2022 JSCompress.com
+
+JSCompress is an online JavaScript compressor that allows you to compress and 
+minify all of your JS files by up to 80% of their original size. Copy and paste 
+your code or you can upload and combine multiple files and then compress. We use 
+UglifyJS 3 and babel-minify for all JavaScript minification and compression.
+
+}
+
+
+{
 /*!
 * The Final Countdown for jQuery v2.2.0 (http://hilios.github.io/jQuery.countdown/)
 * Copyright (c) 2016 Edson Hilios
@@ -21,6 +36,55 @@
 * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 }
+
+
+PROCEDURE WriteJS_DayCount;
+BEGIN
+  WriteLn (T, '<SCRIPT>');
+  WriteLn (T, '$(''[data-countdown]'').each(function() {');
+  WriteLn (T, 'var $this = $(this), finalDate = $(this).data(''countdown'');');
+  WriteLn (T, '$this.countdown(finalDate, function(event) {');
+  WriteLn (T, '$this.html(event.strftime(''%D day(s)''));});});');
+  WriteLn (T, '</SCRIPT>');
+END;
+
+PROCEDURE WriteJS_TableHighlight;
+BEGIN  
+  WriteLn (T, '<SCRIPT>');
+  WriteLn (T, 'function ToggleTable() {');
+  WriteLn (T, 'var x = document.getElementById("DataTable"); if (x.style.display === "none") { x.style.display = "block"; } else { x.style.display = "none"; } } ToggleTable();');
+  WriteLn (T, '</SCRIPT>');
+END;
+
+PROCEDURE WriteJS_SnowFlake;
+BEGIN  
+  Write (T, '<div id="snowContainer"></div>');
+  Write (T,     '<script>');
+  Write (T,         'const snowflakeSizeW = 4.098;');
+  Write (T,         'const snowflakeSizeH = 2.304;');
+  Write (T,         'const snowflakeCount = 200;');
+  Write (T,         'const snowflakeColor = ''rgb(255, 0, 0)'';');
+  Write (T,         'const startDate = ''12-18'';');
+  Write (T,         'const endDate = ''12-31'';');
+  Write (T,         'const snowContainer = document.getElementById(''snowContainer'');');
+  Write (T,         'const currentDate = new Date();');
+  Write (T,         'const currentYear = currentDate.getFullYear();');
+  Write (T,         'const start = new Date(`${currentYear}-${startDate}`);');
+  Write (T,         'const end = new Date(`${currentYear}-${endDate}`);');
+  Write (T,         'if (currentDate >= start && currentDate <= end) {');
+  Write (T,           'for (let i = 0; i < snowflakeCount; i++) {');
+  Write (T,             'const snowflake = document.createElement(''div'');');
+  Write (T,             'snowflake.classList.add(''snowflake'');');
+  Write (T,             'snowflake.style.width = snowflakeSizeW + ''px'';');
+  Write (T,             'snowflake.style.height = snowflakeSizeH + ''px'';');
+  Write (T,             'snowflake.style.backgroundColor = snowflakeColor;');
+  Write (T,             'snowflake.style.borderRadius = ''50%'';');
+  Write (T,             'snowflake.style.left = Math.random() * 100 + ''vw'';');
+  Write (T,             'snowflake.style.animationDuration = Math.random() * 3 + 2 + ''s'';');
+  Write (T,             'snowflake.style.animationDelay = Math.random() * 5 + ''s'';');
+  Write (T,             'snowContainer.appendChild(snowflake);');
+  Write (T,     '}}</script>');
+END;
 
 PROCEDURE WriteJSScript1;
 BEGIN
@@ -5000,4 +5064,18 @@ BEGIN
   Write (T, #44#119#125#44#116#121#112#101#111#102#32#101#61#61#61#77#38#38#40#104);
   Write (T, #46#106#81#117#101#114#121#61#104#46#36#61#119#41#44#119#125#41#59);
   WriteLn (T, '</SCRIPT>');
+END;
+
+PROCEDURE WriteJSScript3 (Key: String);
+BEGIN
+Write (T, '    <script>');
+Write (T, '        function openLink', Key, '() {');
+Write (T, '            var select = document.getElementById("', Key, '");');
+Write (T, '            var selectedOption = select.options[select.selectedIndex];');
+Write (T, '            var link = selectedOption.value;');
+Write (T, '            if (link) {');
+Write (T, '                window.open(link, "_blank");');
+Write (T, '            }');
+Write (T, '        }');
+Write (T, '    </script>');
 END;

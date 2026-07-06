@@ -34,10 +34,12 @@ Days Countdown code adapted from
 
 {$DEFINE EASTEREGG1}
 {$DEFINE EASTEREGG2}
+{$DEFINE CHRISTMAS}
 {$DEFINE DNSHELP8888}
 {$DEFINE BROWSERHELP}
 {$DEFINE ANIMESEARCH}
-{$DEFINE xCUSTOMSEARCH}
+{$DEFINE TOGGLETABLE}
+{$DEFINE CUSTOMSEARCH}
 
 
 PROGRAM TVList;
@@ -52,13 +54,15 @@ USES
 
 CONST
   ProgName        = 'TVList';
-  ProgVer         = 'v1.0';
-  ProgDate        = '20220517';
+  ProgVer         = 'v1.0.2';
+  ProgDate        = '20260706';
 
   HTMLSpace       = '&nbsp;';
+  HTMLOpenSB      = '&#91;';
+  HTMLCloseSB     = '&#93;';
   
 {$IFDEF CUSTOMSEARCH}
-  CustomString    = '<B>[MiNX]</B>';
+  CustomText      = '&#9679;';
   CustomColor     = '#8FF00FF';
 {$ENDIF}
   
@@ -99,6 +103,7 @@ My Bitcoin wallet ID, please don't change it.
 
 
   TDStr         = '<TD ALIGN="CENTER">';
+  TDStrAlt      = '<TD ALIGN="CENTER" STYLE="color:#FFFF00">';
   
   AnimeHiragana = '&#x30a2;&#x30cb;&#x30e1;';
   AnimeFlag     = '^';
@@ -106,12 +111,8 @@ My Bitcoin wallet ID, please don't change it.
   TruncFlag     = '=';
   CountFlag     = '>';
 
-  TVListString  = 'tvlist';
-  TVList_Data   = TVListString + '.txt';
-  TVList_HTML   = TVListString + '.htm';
-  TVList_Config = TVListString + '.cfg';
 
-  TVListLnkSize = 17;
+  TVListLnkSize = 21;
   NewIconHeight = 10;
 
   TVListPNGB64_1 = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTU';
@@ -130,6 +131,12 @@ VAR
   LineCount,
   V,
   I                 : Word;
+  TempPath,
+  RString,
+  TVListString,
+  TVList_Data,
+  TVList_HTML,
+  TVList_Config,
   HTML_RefreshRate,
   __DisplayHighlight,
   Highlight_BGColor,
@@ -143,10 +150,12 @@ VAR
   ComText_Color,
   ComText,
   ShowDay,
+  StatusNewShow,
   StatusUnknown,
   StatusEnded,
   StatusBreak,
   StatusRunning,
+  StatusInDev,
   AnimeXlateGroup,
   Countdown,
   L1,
@@ -175,11 +184,34 @@ VAR
   EZTVDay           : Array [1..EZTVPageMax] of Char;
   EZTVPageCount     : Word;
   Base64New         : Array [1..63] of String;
+  FancyShow         : Boolean;
 
-{
-****** Load the JavaScript components. *****
-}
 {$I tvlist-js.pas}
+{$I tvlist-css.pas}
+
+FUNCTION RandomStr (X: Byte): String;
+CONST
+  Charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+VAR
+  i: Byte;
+  Result : String;
+BEGIN
+  Result := '';
+  Randomize;
+  FOR i := 1 TO X DO
+    Result := Result + Charset[Random(Length(Charset)) + 1];
+  RandomStr := Result;	
+END;
+
+FUNCTION UpStr(I: String): String;
+VAR
+  J : Word;
+BEGIN
+  FOR J := 1 TO Length(I) DO
+    I[J] := UpCase (I[J]);
+  UpStr := I;
+END;
+
 
 {
 Initialise variables used with DEFAULT values before then get replaced by the (.cfg) configuration file. 
@@ -187,7 +219,8 @@ Initialise variables used with DEFAULT values before then get replaced by the (.
 PROCEDURE VARInit;
 VAR
   C : Text;
-  X : String;
+  X,
+  _FancyShowFlag : String;
   PROCEDURE _UpdateVAR (VAR N: String; S, R: String);
   VAR
     P : String;
@@ -216,32 +249,39 @@ VAR
     N := P;
   END;
 BEGIN
-
-{
-***** Load TVList bitmap icon. *****
-}
+  
 {$I tvlist-pg.pas}
 
+  RString := '';
+  RString := RandomStr(16) + '-';
   EZTVPageCount := 0;
 
-  URL[ 1] := 'https://eztv.re';                            {URL_EZTV}
+  URL[ 1] := 'https://eztvx.to';                           {URL_EZTV}
   URL[ 2] := 'https://thepiratebay.org';                   {URL_ThePirateBay}
   URL[ 3] := 'http://www.tv.com';
   URL[ 4] := 'http://variety.com';
   URL[ 5] := 'http://tvline.com';
-  URL[ 6] := 'https://yesmovies.pe';                       {URL_YesMovies}
+  URL[ 6] := 'https://yesmovies.ag';                       {URL_YesMovies}
   URL[ 7] := 'https://tvseriesfinale.com';
   URL[ 8] := 'https://nyaa.si';                            {URL_Nyaa}
   URL[ 9] := 'https://limetorrents.cc';                    {URL_LimeTorrent}
   URL[10] := 'https://next-episode.net';                   {URL_NextEpisode}          
   URL[11] := 'http://eztvstatus.com';
-  URL[12] := '';                                           {URL_TorrentZ2}
+  URL[12] := 'https://www.youtube.com';                    {URL_YouTube}
   URL[13] := 'http://1337x.to';                            {URL_1337x}
   URL[14] := 'https://www.google.com';                     {URL_Google}
   URL[15] := 'http://www.returndates.com';
-  URL[16] := 'https://torrentgalaxy.to';                   {URL_TorGalaxy}
-  URL[17] := 'https://www.syedgakbar.com/projects/dst';    
+  URL[16] := 'https://ext.to';                             {URL_Ext}
 
+  URL[17] := 'https://www.syedgakbar.com/projects/dst';    
+  URL[18] := 'https://downsub.com/';
+  URL[19] := 'https://subtitletools.com/convert-to-srt-online';  
+  
+  URL[20] := 'https://www.opensubtitles.org';
+  URL[21] := 'https://uindex.org';      {URL_UIndex}
+  
+  
+  FancyShow          := False;
   HTML_FontName      := 'Calibri';
   Header_Color       := '"#FFFFFF"';
   Header_BGColor     := '"#000000"';
@@ -258,6 +298,8 @@ BEGIN
   StatusEnded        := '"#CC0000"';
   StatusUnknown      := '"#FFA500"';
   StatusRunning      := '"#000000"';
+  StatusInDev        := '"#0000FF"';
+  StatusNewShow      := '"#000000"';
   AnimeXlateGroup    := '';
 
   IF FileExists (TVList_Config) THEN
@@ -269,7 +311,13 @@ BEGIN
 		    ReadLn (C, X);
 			IF (X[1] <> '#') THEN
 			  BEGIN
-    			IF Pos ('Highlight=', X) > 0 THEN
+			    IF Pos('FANCYSHOW=', UpStr(X)) > 0 THEN
+			      BEGIN
+			        _UpdateVAR (_FancyShowFlag, 'FancyShow', X);
+			        IF UpCase(_FancyShowFlag[1]) = 'Y' THEN
+		              FancyShow := True;
+			      END;
+     			IF Pos ('Highlight=', X) > 0 THEN
 				  BEGIN
  	    		    _UpdateVAR (__DisplayHighlight, 'Highlight', X);
 					IF UpCase(__DisplayHighlight[1]) = 'Y' THEN
@@ -280,7 +328,6 @@ BEGIN
 
     			IF Pos ('HTML_RefreshRate=', X) > 0 THEN
 	    		  _UpdateVAR (HTML_RefreshRate, 'HTML_RefreshRate', X);
-
     			IF Pos ('URL_YesMovies=', X) > 0 THEN
 	    		  _UpdateVAR (URL[6], 'URL_YesMovies', X);
     			IF Pos ('URL_EZTV=', X) > 0 THEN
@@ -289,19 +336,26 @@ BEGIN
 	    		  _UpdateVAR (URL[14], 'URL_Google', X);
     			IF Pos ('URL_ThePirateBay=', X) > 0 THEN
 	    		  _UpdateVAR (URL[2], 'URL_ThePirateBay', X);
-    			IF Pos ('URL_TorGalaxy=', X) > 0 THEN
-	    		  _UpdateVAR (URL[16], 'URL_TorGalaxy', X);
+    			IF Pos ('URL_KickAssTor=', X) > 0 THEN
+	    		  _UpdateVAR (URL[21], 'URL_UIndex', X);
+    			IF Pos ('URL_Ext=', X) > 0 THEN
+	    		  _UpdateVAR (URL[16], 'URL_Ext', X);
+    			IF Pos ('URL_YouTube=', X) > 0 THEN
+	    		  _UpdateVAR (URL[12], 'URL_YouTube', X);
     			IF Pos ('URL_Nyaa=', X) > 0 THEN
 	    		  _UpdateVAR (URL[8], 'URL_Nyaa', X);
     			IF Pos ('AnimeXlateGroup=', X) > 0 THEN
 	    		  _UpdateVAR (AnimeXlateGroup, 'AnimeXlateGroup', X);
+
     			IF Pos ('URL_LimeTorrent=', X) > 0 THEN
 	    		  _UpdateVAR (URL[9], 'URL_LimeTorrent', X);
+				  
     			IF Pos ('URL_1337x=', X) > 0 THEN
 	    		  _UpdateVAR (URL[13], 'URL_1337x', X);
 
         		IF Pos ('HTML_FontName=', X) > 0 THEN
 	    		  _UpdateVAR (HTML_FontName, 'HTML_FontName', X);
+
 		    	IF Pos ('Header_Color=', X) > 0 THEN
 			      _UpdateVAR (Header_Color, 'Header_Color', X);
     			IF Pos ('Header_BGColor=', X) > 0 THEN
@@ -313,6 +367,7 @@ BEGIN
 
 				IF Pos ('Highlight_BGColor=', X) > 0 THEN
 	    		  _UpdateVAR (Highlight_BGColor, 'Highlight_BGColor', X);
+
 		    	IF Pos ('Line1_BGColor=', X) > 0 THEN
 			      _UpdateVAR (Line1_BGColor, 'Line1_BGColor', X);
     			IF Pos ('Line2_BGColor=', X) > 0 THEN
@@ -324,10 +379,14 @@ BEGIN
 			      _UpdateVAR (StatusBreak, 'Status_Break', X);
                 IF Pos ('Status_Running=', X) > 0 THEN
 			      _UpdateVAR (StatusRunning, 'Status_Running', X);
+                IF Pos ('Status_InDev=', X) > 0 THEN
+			      _UpdateVAR (StatusInDev, 'Status_InDev', X);
                 IF Pos ('Status_Unknown=', X) > 0 THEN
 			      _UpdateVAR (StatusUnknown, 'Status_Unknown', X);
                 IF Pos ('Status_Ended=', X) > 0 THEN
 			      _UpdateVAR (StatusEnded, 'Status_Ended', X);
+                IF Pos ('Status_NewShow=', X) > 0 THEN
+			      _UpdateVAR (StatusNewShow, 'Status_NewShow', X);
 			  END;
 		  END;
 		Close (C);
@@ -339,16 +398,17 @@ BEGIN
   LinkURL[ 4] := URL[ 3] + '/search?q=';
   LinkURL[ 5] := URL[ 4] + '/results/#?q=';
   LinkURL[ 6] := URL[ 5] + '/tag/';
-  LinkURL[ 7] := URL[ 6] + '/searching/';
+  LinkURL[ 7] := URL[ 6] + '/search.html?q=';
   LinkURL[ 8] := URL[ 7] + '/tv-show/';
   LinkURL[ 9] := URL[ 8] + '/?f=0&c=0_0&q=';
   LinkURL[10] := URL[ 9] + '/search/all/';
   LinkURL[11] := URL[10] + '/search/?name=';
   LinkURL[12] := URL[11] + '/?s=';
-  LinkURL[13] := URL[12] + '';
+  LinkURL[13] := URL[12] + '/results?search_query=';                    
   LinkURL[14] := URL[13] + '/sort-search/';
   LinkURL[15] := URL[14] + '/search?&q=';
-  LinkURL[16] := URL[16] + '/torrents.php?search=';
+  LinkURL[16] := URL[16] + '/browse/?cat=2&sort=age&order=desc&with_adult=1&q=';
+  LinkURL[17] := URL[21] + '/search.php?c=2&search=';
 END;
 
 PROCEDURE RuntimeError (Msg: String);
@@ -400,56 +460,33 @@ If HTML_RefreshRate is set, embed HTML META refresh code.
             '</TITLE><LINK REL="icon" TYPE="image/png" HREF="data:image/x-icon;base64,', TVListPNGB64_1, TVListPNGB64_2, TVListPNGB64_3, TVListPNGB64_4);
   WriteLn (T, '" REL="icon" TYPE="image/x-icon" />');
 
-  IF DisplayHighlight THEN
-    BEGIN
-	  WriteLn (T);
-	  WriteLn (T, '<style>');
-	  WriteLn (T, '.myTable {}');
-	  WriteLn (T, '.myTable thead th {}');
-	  WriteLn (T, '.myTable tbody td {}');
-	  WriteLn (T);
-	  WriteLn (T, '.myTable-highlight-all {');
-	  WriteLn (T, '    overflow: hidden;');
-	  WriteLn (T, '    z-index: 1;');
-	  WriteLn (T, '}');
-	  WriteLn (T);
-	  WriteLn (T, '.myTable-highlight-all tbody td, .myTable-highlight-all thead th {');
-	  WriteLn (T, '    position: relative;');
-	  WriteLn (T, '}');
-	  WriteLn (T);
-	  WriteLn (T, '.myTable-highlight-all tbody td:hover::before {');
-	  WriteLn (T, '    background-color: ', Highlight_BGColor, ';');
-	  WriteLn (T, '    content:''\00a0'';');
-	  WriteLn (T, '    height: 100%;');
-	  WriteLn (T, '    left: -5000px;');
-	  WriteLn (T, '    position: absolute;');
-	  WriteLn (T, '    top: 0;');
-	  WriteLn (T, '    width: 10000px;');
-	  WriteLn (T, '    z-index: -1;');
-	  WriteLn (T, '}');
-	  WriteLn (T);
-	  WriteLn (T, 'a:link {');
-      WriteLn (T, '    color: ', CSS_Link_Color, ';');
-	  WriteLn (T, '}');
-	  WriteLn (T);
-	  WriteLn (T, 'a:visited {');
-      WriteLn (T, '    color: ', CSS_VLink_Color, ';');
-	  WriteLn (T, '}');
-	  WriteLn (T, '</style>');
-	  WriteLn (T);
-	END;
-
-  WriteLn (T);
-  
 {
-  WriteLn (T, '<script src="https://code.jquery.com/jquery.js"></script>');
-  WriteLn (T, '<script src="https://cdn.rawgit.com/hilios/jQuery.countdown/2.2.0/dist/jquery.countdown.min.js"></script>');
+CSS code for Table Highlight.
 }
 
-  WriteJSScript2; {***  jQuery JavaScript Library v1.11.1      ***}
-  WriteJSScript1; {***  The Final Countdown for jQuery v2.2.0  ***}
+  IF DisplayHighlight THEN
+	WriteStyle_TableHighlight;
+
+{
+CSS code for blinking text.
+}
+  WriteStyle_Blink;
+
+  WriteLn (T);
+  
+{$IFDEF CHRISTMAS}
+  WriteStyle_SnowFlake;
+{$ENDIF}  
+
+  WriteJSScript3 ('SiteStatus');    {***  Pull down menu for site status         ***}
+  WriteJSScript3 ('SubtitlesUtil'); {***  Pull down menu for site status         ***}
+  WriteJSScript2;                   {***  jQuery JavaScript Library v1.11.1      ***}
+  WriteJSScript1;                   {***  The Final Countdown for jQuery v2.2.0  ***}
   
   WriteLn (T);
+{
+CSS code for snowflake...
+}
 
   Write   (T, '</HEAD>');
   Write   (T, '<BODY>');
@@ -459,6 +496,16 @@ END;
 {
 Write HTML header, about, EXTV Status, copyright message, etc.
 }
+
+FUNCTION UFilter (I: String): String;
+VAR
+  O : String;
+BEGIN
+  O := I;
+  Delete (O, 1, Pos('//', O) + 1);
+  UFilter := O;
+END;
+
 PROCEDURE Write_Headers;
 BEGIN
   WriteLn (T, '<FONT FACE="', HTML_FontName, '">');
@@ -470,7 +517,32 @@ BEGIN
   
   WriteLn (T, '<BR>&copy;' + L2 + '</FONT>');
 
-  WriteLn (T, '<SPAN STYLE="float:right;"><A HREF="' + URL[11] + '" TARGET=_BLANK TITLE="', Desc_EZTVStatus, '"><B>&#91;EZTV STATUS&#93;</B></A></SPAN>');
+  WriteLn (T, '<SPAN STYLE="float:right;">');
+  
+  Write (T, 'Site Status: ');
+
+WriteLn (T, '    <select id="SiteStatus" onchange="openLinkSiteStatus()">');
+
+WriteLn (T, '        <option value="">Select...</option>');
+
+WriteLn (T, '        <option value="https://eztvstatus.org">EZTV (official)</option>');
+WriteLn (T, '        <option value="https://1337x-status.org/">1337x (official)</option>');
+WriteLn (T, '        <option value="">----------</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/eztvstatus.org.html">EZTV (official) (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/l337x-status.org.html">1337x (official) (IIDRN)</option>');
+WriteLn (T, '        <option value="">----------</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[16]), '.html">', UFilter(URL[16]), ' (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[ 1]), '.html">', UFilter(URL[ 1]), ' (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[ 8]), '.html">', UFilter(URL[ 8]), ' (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[ 2]), '.html">', UFilter(URL[ 2]), ' (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[ 9]), '.html">', UFilter(URL[ 9]), ' (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[21]), '.html">', UFilter(URL[21]), ' (IIDRN)</option>');
+WriteLn (T, '        <option value="https://www.isitdownrightnow.com/', UFilter(URL[ 6]), '.html">', UFilter(URL[ 6]), ' (IIDRN)</option>');
+
+WriteLn (T, '    </select>');
+
+  
+  WriteLn (T, '</SPAN>');
   
   Write   (T, '<P STYLE="text-align:left;">');
   Write   (T, '<FONT SIZE=-1><I>', L3, '</I>');
@@ -482,6 +554,14 @@ BEGIN
 {$ENDIF}
 
 WriteLn (T, '</SPAN></P></FONT>');
+
+  {$IFDEF TOGGLETABLE}
+  
+  WriteLn (T, '<HR>');
+  WriteLn (T, '<button onclick="ToggleTable()">Toggle Shows</button><P/>');
+  WriteLn (T, '<DIV id="DataTable">');
+
+  {$ENDIF}
 
   IF DisplayHighlight THEN
     Write   (T, '<TABLE class="myTable myTable-highlight-all" WIDTH="100%" BORDER=1><THEAD><TR BGCOLOR=', Header_BGColor, '>')
@@ -509,16 +589,6 @@ PROCEDURE Write_Bookmarks;
 VAR
   J,
   K : Word;
-  FUNCTION RepeatStr (S: String; N: Word):String;
-  VAR
-    I : Word;
-	X : String;
-  BEGIN
-    X := '';
-	FOR I := 1 TO N DO
-	  X := X + S;
-	RepeatStr := X;
-  END;
   PROCEDURE _Pull (C: Char; VAR N: Word);
   VAR
     J : Word;
@@ -607,6 +677,8 @@ BEGIN
   FOR J := 1 TO 63 DO 
     Write (T, Base64New[J]);
   WriteLn (T, '"/></A>');
+  
+  Write (T, HTMLSpace, HTMLSpace, '<A HREF="', LinkURL[2], 'Complete" TARGET="_BLANK">Completed Seasons on EZTV.</A>');
 
 {$IFDEF BROWSERHELP}
   Write (T, '<P>');
@@ -624,7 +696,9 @@ BEGIN
   Write (T, '<A HREF="', URL[ 8], '" TARGET="_BLANK">Nyaa(', AnimeHiragana, ')</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[ 2], '" TARGET="_BLANK">The Pirate Bay</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[ 9], '" TARGET="_BLANK">Lime Torrent</A>,', HTMLSpace);
-  Write (T, '<A HREF="', URL[16], '" TARGET="_BLANK">Torrent Galaxy</A>,', HTMLSpace);
+  Write (T, '<A HREF="', URL[16], '" TARGET="_BLANK">Ext</A>,', HTMLSpace);
+  Write (T, '<A HREF="', URL[21], '" TARGET="_BLANK">UIndex</A>,', HTMLSpace);
+  Write (T, '<A HREF="', URL[12], '" TARGET="_BLANK">YouTube</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[13], '" TARGET="_BLANK">1337x</A>,', HTMLSpace);
   Write (T, '<A HREF="', URL[10], '" TARGET="_BLANK">Next Episode</A>,', HTMLSpace);
 
@@ -632,8 +706,15 @@ BEGIN
 
   Write (T, '<A HREF="', URL[ 6], '" TARGET="_BLANK">Yes Movies</A>');
 
-  Write (T, '<BR><A HREF="', URL[17], '" TARGET="_BLANK">Subtitle Translator</A>');
-
+  WriteLn (T, '<P/>Subtitles Utility:', HTMLSpace);
+  WriteLn (T, '    <select id="SubtitlesUtil" onchange="openLinkSubtitlesUtil()">');
+  WriteLn (T, '        <option value="">Select...</option>');
+  WriteLn (T, '        <option value="', URL[17], '">Translate SRT (language)</option>');
+  WriteLn (T, '        <option value="', URL[18], '">Extract SRT (online)</option>');
+  WriteLn (T, '        <option value="', URL[19], '">Convert SRT (from other formats)</option>');
+  WriteLn (T, '        <option value="', URL[20], '">Locate SRT (subtitles)</option>');
+  WriteLn (T, '    </select>');
+    
   WriteLn (T, '</CENTER></TT>');
 END;
 
@@ -643,7 +724,7 @@ Write Footer HTML code after TABLE generation.
 PROCEDURE Write_Footer;
 {$IFDEF EASTEREGG1}
 CONST
-  SQMax = 50;
+  SQMax = 200;
   
 VAR
   SQ      : String;
@@ -654,24 +735,26 @@ VAR
   
 BEGIN
   WriteLn (T, '</TABLE><P>');
+  
+{$IFDEF TOGGLETABLE}
+  WriteLn (T, '</DIV>');
+{$ENDIF}
+  
   Write_Bookmarks;
 
 {$IFDEF EASTEREGG1}
 
-{
-***** Load one liner quotes. Remember to update the SQMax constant in this PROCEDURE. *****
-}
   {$I tvlist-sq.pas}
   
   Randomize;
   R := Random * SQMax;
   I := Round (R);
   
-  Write (T, '<P><CENTER><FONT SIZE=-2>');
+  Write (T, '<P><CENTER><FONT SIZE=-2><I>');
 
   SQ := SQS[I];
-  Write (T, SQ);  
-  Write (T, '</FONT></CENTER></P>');
+  Write (T, SQ, HTMLSpace, HTMLOpenSB, I, HTMLCloseSB);  
+  Write (T, '</I></FONT></CENTER></P>');
 {$ENDIF}
   
   xEnd := getTickCount64;
@@ -689,13 +772,18 @@ BEGIN
 {
 ORIGINAL>>>>>>        $this.html(event.strftime('%D days %H:%M:%S'));
 }
-  WriteLn (T, '<SCRIPT>');
-  WriteLn (T, '$(''[data-countdown]'').each(function() {');
-  WriteLn (T, 'var $this = $(this), finalDate = $(this).data(''countdown'');');
-  WriteLn (T, '$this.countdown(finalDate, function(event) {');
-  WriteLn (T, '$this.html(event.strftime(''%D day(s)''));});});');
-  WriteLn (T, '</SCRIPT>');
-		
+  WriteJS_DayCount;
+
+{$IFDEF TOGGLETABLE}
+  WriteJS_TableHighlight;
+{$ENDIF}  
+
+{
+Code for the snowfalling effect...
+}
+{$IFDEF CHRISTMAS}
+  WriteJS_SnowFlake;
+{$ENDIF}		
   WriteLn (T, '</BODY></HTML>');
 END;
 
@@ -804,9 +892,11 @@ END;
 
 PROCEDURE ProcessData;
 VAR
-  IsAnime : Boolean;
-  AS      : String;
-  _I      : Word;
+  EntryIsCountdown,
+  IsAnime           : Boolean;
+  AS                : String;
+  _I                : Word;
+  CurRunShowDay     : Char;
   
   PROCEDURE _Showday(SS: String; C: Char);
   BEGIN
@@ -815,6 +905,7 @@ VAR
 	EZTVDay[EZTVPageCount] := C;
   END;
 BEGIN
+  CurRunShowDay := #00;
   WHILE NOT Eof (S) DO
     BEGIN
       IsAnime := False;
@@ -828,10 +919,12 @@ Check if string W has the [YYYYMMDD] data, and initiate countdown code into "Cou
 	  ShowDay := '<B><FONT COLOR=' + StatusUnknown + '>&#91;UNKWN&#93;</FONT></B>';
 
       Countdown := '';
+	  EntryIsCountdown := False;
 	  IF ((Length(W) > 10) AND ((W[1] = '[') AND (W[10] = ']'))) THEN
 	    BEGIN
 	      Countdown := '<div data-countdown="' + W[2] + W[3] + W[4] + W[5] + '/' + W[6] + W[7] + '/' + W[8] + W[9] + '">';
 		  Delete (W, 1, 10);
+		  EntryIsCountdown := True;
 	    END;
 
 {
@@ -840,16 +933,18 @@ Check if char in position 2 of string W is a "|" char, if so add the relevant st
 }	  
       IF W[2] = '|' THEN
         BEGIN
-          CASE UpCase(W[1]) OF
-            '0' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>S------</FONT></B>', '0');
+		  CurRunShowDay := UpCase(W[1]);
+          CASE CurRunShowDay OF
+            '0' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>s------</FONT></B>', '0');
             '1' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>-M-----</FONT></B>', '1');
-            '2' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>--T----</FONT></B>', '2');
+            '2' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>--t----</FONT></B>', '2');
             '3' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>---W---</FONT></B>', '3');
             '4' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>----T--</FONT></B>', '4');
             '5' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>-----F-</FONT></B>', '5');
             '6' : _ShowDay('<B><FONT COLOR=' + StatusRunning + '>------S</FONT></B>', '6');
-            'Y' : _ShowDay('<B><FONT COLOR=' + StatusBreak + '>&#91;BREAK&#93;</FONT></B>', 'Y');
-            'Z' : _ShowDay('<B><FONT COLOR=' + StatusEnded + '>&#91;ENDED&#93;</FONT></B>', 'Z');
+            'X' : _ShowDay('<B><FONT COLOR=' + StatusInDev   + '>&#91;INDEV&#93;</FONT></B>', 'X');
+            'Y' : _ShowDay('<B><FONT COLOR=' + StatusBreak   + '>&#91;BREAK&#93;</FONT></B>', 'Y');
+            'Z' : _ShowDay('<B><FONT COLOR=' + StatusEnded   + '>&#91;ENDED&#93;</FONT></B>', 'Z');
           END;
           Delete (W, 1, 2);
         END;
@@ -949,9 +1044,21 @@ Display search data from EZTV search engine, and if provided, EZTV's dedicated p
 {
 Added a Google search using show name and added the "+TV +Show" parameters to the search query.
 }			
-		  Write (T, '<A HREF="', LinkURL[ 2], RepSpaceStr('-', XN), '" TARGET="_BLANK">Search</A></TD>');
+          Write (T, '<A HREF="', LinkURL[ 2], RepSpaceStr('-', XN), '" TARGET="_BLANK">');
+		  
+		  IF ((XL = '0//') AND (CurRunShowDay IN ['0'..'6']) AND (NOT EntryIsCountdown)) THEN 
+		    Write (T, '<FONT COLOR=', StatusNewShow, '><DIV CLASS="blinking-text"><B>Search</B></DIV></FONT>') 
+		  ELSE 
+			Write (T, 'Search');
+		  
+		  Write (T, '</A></TD>');
 		  Write (T,  TDStr + '<A HREF="', LinkURL[15], RepSpaceStr('+', XN), '+%2BTV+%2BShow" TARGET="_BLANK">Google</A>');
 
+
+{
+Show trailer for show if available on YouTube
+}		  
+          Write (T, HTMLSpace, '<A HREF="', LinkURL[13], RepSpaceStr('+', XN), '+Official+Trailer" TARGET="_BLANK"><B>', HTMLOpenSB, 'TR', HTMLCloseSB, '</B></A>');
           Write (T, TDStr);
 
 {$IFDEF ANIMESEARCH}
@@ -972,14 +1079,17 @@ Add the other torrent search engine links to search show name.
 }
           Write (T, '<A HREF="', LinkURL[ 3], RepSpaceStr('+', XN), '" TARGET="_BLANK">PirateBay</A>,', HTMLSpace);
           Write (T, '<A HREF="', LinkURL[10], XN, '/" TARGET="_BLANK">LimeTor</A>,', HTMLSpace);
-		  Write (T, '<A HREF="', LinkURL[16], RepSpaceStr('+', XN), '" TARGET="_BLANK">TorGalaxy</A>,', HTMLSpace);
+		  Write (T, '<A HREF="', LinkURL[16], RepSpaceStr('+', XN), '" TARGET="_BLANK">Ext</A>,', HTMLSpace);
+          Write (T, '<A HREF="', LinkURL[17], RepSpaceStr(' ', XN), '" TARGET="_BLANK">UIndex</A>,', HTMLSpace);
           Write (T, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '/time/desc/1/" TARGET="_BLANK">1337x</A>');
 
 {$IFDEF CUSTOMSEARCH}
 {
-Custome search that I psersonally use, but can be modified if you understand how TVList works in this source code.
+Custom search that I psersonally use, but can be modified if you understand how TVList works in this source code.
 }
-          Write (T, ',', HTMLSpace, '<A HREF="', LinkURL[14], RepSpaceStr('+', XN), '+MiNX/time/desc/1/" TARGET="_BLANK"><FONT COLOR=', CustomColor, '>', CustomString, '</FONT></A>');
+
+          Write (T, ',', HTMLSpace, '<A TITLE="Ext-x265-MeGusta" HREF="',       LinkURL[16], RepSpaceStr('+', XN), '+x265+MeGusta" TARGET="_BLANK"><FONT COLOR=',                CustomColor, '><B>', HTMLOpenSB, 'EMG', HTMLCloseSB, '</B></FONT></A>');
+          Write (T, '' , HTMLSpace, '<A TITLE="Ext-720p-x265-MeGusta" HREF="',  LinkURL[16], RepSpaceStr('+', XN), '+720p+x265+MeGusta" TARGET="_BLANK"><FONT COLOR=',           CustomColor, '><B>', HTMLOpenSB, 'EMG7', HTMLCloseSB, '</B></FONT></A>');
 {$ENDIF}		  
 		  Write (T, '</TD>');
 {
@@ -990,7 +1100,7 @@ Add the news, streaming, and episode guide sites to show.
           Write (T, TDStr + '<A HREF="', LinkURL[ 5], XN, '" TARGET="_BLANK">Variety</A>,', HTMLSpace);
           Write (T, '<A HREF="', LinkURL[ 6], RepSpaceStr('-', XN), '" TARGET="_BLANK">TVLine</A></TD>');
 		
-          Write (T, TDStr + '<A HREF="', LinkURL[ 7], RepSpaceStr('+', XN), '.html" TARGET="_BLANK">YesMovies</A>', HTMLSpace);
+          Write (T, TDStr + '<A HREF="', LinkURL[ 7], RepSpaceStr('+', XN), '" TARGET="_BLANK">YesMovies</A>', HTMLSpace);
           WriteLn (T, '</TD></TR>');
           Write ('.');
           Inc (LineCount);
@@ -1011,15 +1121,225 @@ Close the source (.txt) and target (.htm) files.
   Close (T);
 END;
 
+PROCEDURE GetTempPath;
+VAR
+  VarName : String;
+  PA      : Char;
 BEGIN
-  GetDateTime;
+  VarName := 'TMPDIR';
+  PA := '/';
+{$IFDEF MSWINDOWS}
+  VarName := 'TEMP';
+  PA := '\';
+{$ENDIF}
+  TempPath := GetEnvironmentVariable(VarName);
+  IF TempPath[Length(TempPath)] <> PA THEN 
+    TempPath := TempPath + PA;
+  
+END;
+
+PROCEDURE ProcessParameters;
+VAR
+  I : Word;
+  S : String;
+BEGIN
+  
+  TVListString  := 'tvlist';
+  IF (ParamCount > 0) THEN
+    BEGIN
+      FOR I := 1 TO ParamCount DO
+        BEGIN
+		  S := ParamStr (I);
+		  IF S = '/s' THEN
+		    BEGIN
+		      FancyShow := True;
+			END  
+		  ELSE
+		    BEGIN
+			  IF Pos('.', S) > 0 THEN 
+			    BEGIN
+				END
+			  ELSE
+		        TVListString := S;
+			END;
+        END;
+    END;
+  TVList_Data   := TVListString + '.txt';
+  TVList_HTML   := TVListString + '.htm';
+  TVList_Config := TVListString + '.cfg';
+END;
+
+{
+Sort data file into three categories (running, upcoming, other),
+then merge back into a single sorted temp file for processing.
+Temp files are deleted automatically via CleanupTempFiles after output is generated.
+}
+PROCEDURE DoFancy;
+VAR
+  S,
+  T,
+  U,
+  V      : Text;
+  A      : String;
+  PROCEDURE _OpenFiles_Seperate;
+  BEGIN
+    Assign (S, TVList_Data);
+    Assign (T, TempPath + RString + 'tvlist1.txt');
+    Assign (U, TempPath + RString + 'tvlist2.txt');
+    Assign (V, TempPath + RString + 'tvlist3.txt');
+    Reset (S);
+    ReWrite (T);
+    ReWrite (U);
+    ReWrite (V);
+  END;  
+  PROCEDURE _CloseFiles_Seperate;
+  BEGIN
+    Close (S);
+    Close (T);
+    Close (U);  
+    Close (V);
+  END;
+  PROCEDURE _Work_Seperate;
+  BEGIN
+    WHILE NOT Eof(S) DO
+      BEGIN
+	    Write ('.');
+	    ReadLn (S, A);
+	    IF A[1] IN ['0'..'6'] THEN
+	      WriteLn (T, A);
+	    IF A[1] = '[' THEN
+	      WriteLn (U, A);
+	    IF A[1] IN ['0'..'6', '[', '#'] THEN 
+	      Write ('@')
+		ELSE
+  	      WriteLn (V, A);
+	  END;	
+  END;
+  PROCEDURE _OpenFiles_Merge;
+  BEGIN
+    Assign (S, TempPath + RString + 'tvlist0.txt');
+    Assign (T, TempPath + RString + 'tvlist1.txt');
+    Assign (U, TempPath + RString + 'tvlist2.txt');
+    Assign (V, TempPath + RString + 'tvlist3.txt');
+    ReWrite (S);
+    Reset (T);
+    Reset (U);
+    Reset (V);
+  END;
+  PROCEDURE _CloseFiles_Merge;
+  BEGIN
+    _CloseFiles_Seperate; {* Closes the same file handles *}
+  END;
+  PROCEDURE _Work_Merge;
+    PROCEDURE __Progress;
+    BEGIN
+      Write ('*');
+    END;
+  BEGIN
+    WHILE NOT Eof(T) DO
+      BEGIN
+	    __Progress;
+	    ReadLn (T, A);
+	    WriteLn (S, A);
+	  END;
+    WHILE NOT Eof(U) DO
+      BEGIN
+	    __Progress;
+	    ReadLn (U, A);
+	    WriteLn (S, A);
+	  END;
+    WHILE NOT Eof(V) DO
+      BEGIN
+	    __Progress;
+	    ReadLn (V, A);
+	    WriteLn (S, A);
+	  END;
+  END;
+PROCEDURE _SortUpcomming;
+CONST
+  StrLimit = 10000;
+VAR
+  S     : Text;
+  T     : String;
+  A     : Array [1..StrLimit] of String;
+  N,
+  I,
+  J      : Word;
+BEGIN
+    Assign (S, TempPath + RString + 'tvlist2.txt');
+	Reset (S);
+	N := 1;
+	WHILE ((NOT Eof (S)) AND (N <= StrLimit)) DO
+	  BEGIN
+	    ReadLn (S, A[N]);
+		Inc (N);
+	  END;
+	Close (S);  
+	Dec (N);  
+	FOR J := 1 TO N DO
+	  FOR I := 1 TO (N - 1) DO
+	    IF A[I] > A[I + 1] THEN
+		  BEGIN
+		    T := A[I];
+			A[I] := A[I + 1];
+			A[I + 1] := T;
+		  END;
+    Assign (S, TempPath + RString + 'tvlist2.txt');
+	ReWrite (S);	  
+	FOR I := 1 TO N DO
+	  WriteLn (S, A[I]);
+	Close (S);  
+END;
+  
+BEGIN
+  _OpenFiles_Seperate;
+  _Work_Seperate;  
+  _CloseFiles_Seperate;
+  _SortUpcomming;
+  _OpenFiles_Merge;
+  _Work_Merge;
+  _CloseFiles_Merge;
+  TVList_Data := TempPath + RString + 'tvlist0.txt';
+END;
+
+{
+Remove temp files created by DoFancy from the system temp directory.
+Only runs if FancyShow mode was active.
+}
+PROCEDURE CleanupTempFiles;
+BEGIN
+  IF FancyShow THEN
+    BEGIN
+      DeleteFile (TempPath + RString + 'tvlist0.txt');
+      DeleteFile (TempPath + RString + 'tvlist1.txt');
+      DeleteFile (TempPath + RString + 'tvlist2.txt');
+      DeleteFile (TempPath + RString + 'tvlist3.txt');
+    END;
+END;
+
+BEGIN
+  GetTempPath;
+  TVListString := 'tvlist';
+  TVList_Data  := 'tvlist.txt';
+  TVList_HTML  := 'tvlist.htm';
+  TVList_Config:= 'tvlist.cfg';
   VARInit;
+  ProcessParameters;
+  GetDateTime;
   Prog_Message;
+  IF FancyShow Then
+    DoFancy;
   ProcessFilesOpen;
   IF DisplayHighlight THEN
     WriteLn (T, '<TBODY>');
   ProcessData;
   IF DisplayHighlight THEN
     WriteLn (T, '</TBODY>');
+	
+{$IFDEF TOGGLETABLE}
+  Write (T, '</DIV>');
+{$ENDIF}
+	
   ProcessFilesClose;
+  CleanupTempFiles;
 END.

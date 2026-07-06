@@ -10,8 +10,8 @@
 #
 #     N|Name^,Path@Comment
 #
-#     N            = 0..7, 0=Sunday, 1=Monday, etc.; 7=Unknown, Y=Break, Z=Ended, or Date to show start/returning
-#                    in format [YYYYMMDD] for countdown (in days).
+#     N            = 0..7, 0=Sunday, 1=Monday, etc.; 7=Unknown, X=In-Dev, Y=Break, Z=Ended, or Date to show 
+#                    start/returning in format [YYYYMMDD] for countdown (in days).
 #     Name         = Name of Show.
 #     =            = Will truncate show name to where the "=" is and replace it with "...". For display in web
 #                    page only, the full name will be used for other functions.
@@ -22,114 +22,56 @@
 #     @            = Will add text as a mouse-over comment to series name. Should be at the end of line.
 #     
 
-7|Ahsoka,0//@In development, no release date
-7|American McGees Alice,0//@In development, no release date
-Anansi Boys,0//
-7|Andor,0//@In development, no release date
-7|Avatar The Last Airbender,0//
-Y|Biohackers,133614/biohackers/
-Y|Carnival Row,13323/carnival-row/
-Constellation,0//
-Y|Coroner,4151/coroner/
-Y|Doom Patrol,4466/doom-patrol/
-7|Edge of Tomorrow,0//@In development, no release date
-Y|Euphoria,7208/euphoria/
-2|Fantasy Island,342897/fantasy-island/@Returning Tuesday, 31-May-2022
-Y|Fate the Winx Saga,220192/fate-the-winx-saga/
-7|Firefly,0//@Rumour, unconfirmed...
-Y|Foundation,344366/foundation/
-Y|Ghosts 2021,393996/ghosts/
-1|Ghost in the Shell SAC 2045,90642/ghost-in-the-shell-sac2045/@Returning Monday, 23-May-2022
-3|Halo,415613/halo/
-Y|Harley Quinn,29596/harley-quinn/
-Y|Harrow,2730/harrow/
-Y|His Dark Materials,23839/his-dark-materials/
-[20220821]House of the Dragon,0//@Starting on Sunday, 21-Aug-2022
-Y|How I Met Your Father,391360/how-i-met-your-father/
-Y|In from the Cold,395031/in-from-the-cold/
-Ironheart,0//
-3|Kung Fu 2021,271820/kung-fu/
-Y|La Brea,346573/la-brea/
-7|Lando,0//@In development, no release date
-Y|Leverage Redemption,308234/leverage-redemption/
-Y|Locke and Key,39271/locke-and-key/
-Y|Loki,293695/loki/
-4|Made for Love,256422/made-for-love/
-Y|Marvel Studios Assembled,246769/marvel-studios-assembled/
-Y|Marvel Studios Legends,214995/marvel-studios-legends/
-Y|Miss Scarlet and the Duke,68443/miss-scarlet-and-the-duke/
-Y|Miracle Workers,4423/miracle-workers/
-[20220621]Motherland Fort Salem,55064/motherland-fort-salem/@Returning Tuesday, 21-Jun-2022
-[20220608]Ms Marvel,0//@Returning Wednesday, 8-Jun-2022
-Z|Naomi,389034/naomi/
-Nova,0//
-5|Obi-Wan Kenobi,0//@Returning Friday, 27-May-2022
-Y|Omniscient,36370/omniscient/
-Y|One Punch Man^SSA 480p,27717/one-punch-man/
-Y|Our Flag Means Death,407824/our-flag-means-death/
-Y|Outer Range,423480/outer-range/
-Y|Parallels,415114/parallels/
-Y|Peacemaker,392251/peacemaker/
-Percy Jackson and the Olympians,0//
-7|Quantum Leap,0//@In development, no release date
-Y|Raised by Wolves,141999/raised-by-wolves/
-7|Rangers of the New Republic,0//
-Y|Red Election,348486/red-election/
-Reginald the Vampire,0//
-Y|Resident Alien,223156/resident-alien/
-Y|Rick and Morty,1017/rick-and-morty/
-Y|Roar 2022,423358/roar/
-[20220606]Roswell New Mexico,4200/roswell-new-mexico/@Returning Monday, 6-Jun-2022
-7|Secret Invasion,0//@In development, no release date
-Y|Sex Education,33290/sex-education/
-Y|Shadow and Bone,268566/shadow-and-bone/
-7|She-Hulk,0//@In development, no release date
-Y|Shining Vale,409023/shining-vale/
-1|Signora Volpe,0//
-Y|Single Drunk Female,392535/single-drunk-female/
-Y|Sister Boniface Mysteries,401533/sister-boniface-mysteries/
-Y|Sort of,349420/sort-of/
-Y|Spitting Image,169670/spitting-image/
-Y|Squid Game,341090/squid-game/
-Y|Stargirl,81199/stargirl/
-Y|Star Trek Discovery,2249/star-trek-discovery/
-Y|Star Trek Lower Decks,125226/star-trek-lower-decks/
-Y|Star Trek Picard,34201/star-trek-picard/
-7|Star Trek Section 31,0//@In development, no release date
-4|Star Trek Strange New Worlds,300795/star-trek-strange-new-worlds/
-Y|Star Wars The Bad Batch,274696/star-wars-the-bad-batch/
-Y|Star Wars Visions,343343/star-wars-visions/
-5|Stranger Things,1861/stranger-things/@Returning Friday, 27-May-2022
-7|The Acolyte,0//@In development, no release date
-Z|The Expanse,1342/the-expanse/
-Y|The Handmaids Tale,2090/the-handmaids-tale/
-7|The High Republic,0//
-The Ignorant Angels,0//
-Y|The L Word Generation Q,29436/the-l-word-generation-q/
-[20220907]The Lord of the Rings= The Rings of Power,0//@Starting on Friday, 7-Sep-2022
-0|The Man Who Fell to Earth,426769/the-man-who-fell-to-earth/
-Y|The Mandalorian,25836/the-mandalorian/
-Y|The Nevers,262296/the-nevers/
-[20220602]The Orville,2151/the-orville/@Returning Thursday, 2-Jun-2022
-0|The Time Travelers Wife,0//
-Y|The Witcher,31307/the-witcher/
-7|The Witcher Blood Origin,0//@In development, no release date
+Y|A Good Girl's Guide To Murder,0//
+Y|Amandaland,0//
+X|Anansi Boys,0//
+Z|Andor,454001/andor/
+Y|Apocalypse Hotel^SubsPlease+720p,584071/apocalypse-hotel/
+Assassins Creed,0//
+Y|Avatar The Last Airbender,577490/avatar-the-last-airbender/
+Y|Black Doves,582130/black-doves/
+X|Blade Runner 2099,0//
+X|Booster Gold,0//
+X|Captives War,0//
+Y|CIA,589249/cia/
+Y|Creature Commandos,582131/creature-commandos/
+4|Criminal Minds,2027/criminal-minds/
+Y|Dan Da Dan^EMBER S02 DanDaDan,580966/dan-da-dan/
+[20261211]Discretion,0//@Starting Fri, 11-Dec-2026
+Y|Dune Prophecy,581801/dune-prophecy/
+Duo,0//
+Y|Dynamite Kiss,588076/dynamite-kiss/
+Z|Euphoria,7208/euphoria/
+X|Far Cry,0//
+Z|Good Omens,6413/good-omens/
+Y|Hawkeye,370325/hawkeye/
+Y|High Potential,580679/high-potential/
+X|Kill Jackie,0//
+Y|Kowloon Generic Romance^SubsPlease+720p,584019/kowloon-generic-romance/
+[20260816]Lanterns,0//@Starts on Sun, 16-Aug-2026
+Y|Lioness,546676/special-ops-lioness/
+[20260715]Lucky 2026,0//@Starting Wed, 15-Jul-2026
+Y|Mayfair Witches,485454/anne-rices-mayfair-witches/
+Z|Mob Psycho 100^DB,460752/mob-psycho-100/
+Y|Monarch Legacy of Monsters,575940/monarch-legacy-of-monsters/
+Y|Murderbot,584834/murderbot/
+Y|Ninja to Koroshiya no Futarigurashi^SubsPlease+720p,584096/ninja-to-koroshiya-no-futarigurashi/
+Y|One Piece^,558744/one-piece/
+Y|Percy Jackson and= the Olympians,576523/percy-jackson-and-the-olympians/
+Y|Pluribus,588020/pluribus/
+#Z|Resident Alien,223156/resident-alien/
+Y|Secrets Declassified with David Duchovny,584014/secrets-declassified-with-david-duchovny/
+Y|Splinter Cell Deathwatch,587477/splinter-cell-deathwatch/
+Y|Spy X Family^Erai-Raws+720p,458713/spy%E3%97family/
+Y|Star Trek Starfleet Academy,588827/star-trek-starfleet-academy/
+[20260723]Star Trek Strange New Worlds,300795/star-trek-strange-new-worlds/@Returning Thu, 23-Jul-2026
+Y|Ted,576821/ted/
+Y|The Lord of the Rings= The Rings of Power,451107/the-lord-of-the-rings-the-rings-of-power/
+X|The Savant,0//
 Z|The Woman in the House= Across the Street from the Girl in the Window,395013/the-woman-in-the-house-across-the-street-from-the-girl-in-the-window/
-Y|Theodosia,410373/theodosia/
-Y|Tokyo Vice,420743/tokyo-vice/
-Y|Tom Clancys Jack Ryan,3004/tom-clancys-jack-ryan/
-Y|Upload,73044/upload/
-7|Vampire Academy,0//@In development, no release date
-Y|Warrior,4896/warrior/
-Y|Warrior Nun,105193/warrior-nun/
-Wednesday,0//
-Welcome Home Nikki Glaser,0//
-[20220626]Westworld,1913/westworld/@Returning Sunday, 26-Jun-2022
-Y|What If,349687/what-if/
+Y|Undercover Miss Hong,588695/undercover-miss-hong/
+Y|Wednesday,472842/wednesday/
+1|World War II with Tom Hanks,592381/world-war-ii-with-tom-hanks/
+Y|X-Men 97,578000/x-men-97/
 
-4|Young Sheldon,2250/young-sheldon/
-
-# @Starting on Tuesday, 25-Jan-2022
-# @Returning Tuesday, 25-Jan-2022
-
-#     Last updated 17-May-2022
+#     Last updated 6-Jul-2026
